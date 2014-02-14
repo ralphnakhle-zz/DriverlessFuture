@@ -18,16 +18,6 @@ class Vehicle {
 
 
     // Constructor initialize all values
-  Vehicle( PVector l, float ms, float mf) {
-    position = l.get();
-    r = 4.0;
-    maxspeed = ms;
-    maxsteer = mf;
-    acceleration = new PVector(0, 0);
-    velocity = new PVector(maxspeed, 0);
-  }
-
-  // Constructor initialize all values
   Vehicle( PVector l, float ms, float mf, PVector t) {
     position = l.get();
     carDestination = t;
@@ -48,8 +38,7 @@ class Vehicle {
   //  Go towards destination code
   // ----------------------------------------------------------------------
   // A method that calculates a steering force towards a target
-  // STEER = DESIRED MINUS VELOCITY
-  // Daniel Shiffman <http://www.shiffman.net>
+
   PVector seekTarget() {
     PVector steer = new PVector(0, 0);
 
@@ -63,8 +52,6 @@ class Vehicle {
     else {
       tempTarget = new PVector(position.x, carDestination.y);
     }
-    stroke(255, 0, 0);
-    line(tempTarget.x, tempTarget.y, position.x, position.y);
 
     // Normalize desired and scale to maximum speed
     tempTarget.normalize();
@@ -72,7 +59,7 @@ class Vehicle {
     // Steering = Desired minus velocity
     steer = PVector.sub(tempTarget, velocity);
     // Limit to maximum steering force
-    steer.limit(maxsteer/2);
+    steer.limit(maxsteer*.5);
 
     // return steer Force
     return steer;
@@ -89,11 +76,8 @@ class Vehicle {
     predict.mult(20);
     PVector predictLoc = PVector.add(position, predict);
 
-
-
     // Now we must find the normal to the path from the predicted position
     // We look at the normal for each line segment and pick out the closest one
-
     PVector normal = null;
     PVector target = null;
     float worldRecord = 1000000;  // Start with a very high record distance that can easily be beaten
@@ -112,8 +96,6 @@ class Vehicle {
       PVector pathDirection = PVector.sub(b, a);
       pathDirection.normalize();
 
-
-      ///////////////////////////////////////////////////////////////////////////////////////////////
       // check for out of segment normalPoint
       String generalDirection = getDirection(pathDirection);
       if (generalDirection == "East") {
@@ -145,25 +127,18 @@ class Vehicle {
           normalPoint = a.get();
         }
         if (normalPoint.y < b.y ) {
-
           normalPoint = b.get();
         }
       }
-      /////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
       // How far away are we from the path?
       float distance = PVector.dist(predictLoc, normalPoint);
-
 
       // Did we beat the record and find the closest line segment?
       if (distance < worldRecord) {
         worldRecord = distance;
         // If so the target we want to steer towards is the normal
         normal = normalPoint;
-
-
         target = normalPoint.get();
         target.add(pathDirection);
       }
@@ -172,26 +147,6 @@ class Vehicle {
     // Only if the distance is greater than the path's radius do we bother to steer
     if (worldRecord > p.radius) {
       seek(target);
-    }
-
-
-    // Draw the debugging stuff
-    if (debug) {
-      // Draw predicted future position
-      stroke(0);
-      fill(0);
-      line(position.x, position.y, predictLoc.x, predictLoc.y);
-      ellipse(predictLoc.x, predictLoc.y, 4, 4);
-
-      // Draw normal position
-      stroke(0);
-      fill(0);
-      ellipse(normal.x, normal.y, 4, 4);
-      // Draw actual target (red if steering towards it)
-      line(predictLoc.x, predictLoc.y, normal.x, normal.y);
-      if (worldRecord > p.radius) fill(255, 0, 0);
-      noStroke();
-      ellipse(target.x, target.y, 8, 8);
     }
   }
 
