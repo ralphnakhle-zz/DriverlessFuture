@@ -1,5 +1,5 @@
- 
- class CarSystem 
+
+class CarSystem 
 {
   int CarPopulation;  
 
@@ -11,6 +11,7 @@
   // Vector for destination
   PVector destination;
 
+  // Constructor for the CarSystem class
   CarSystem() {
     //set variable Car population
     CarPopulation = 20;
@@ -27,15 +28,72 @@
 
     for (int i = 0; i < CarPopulation; i ++) {
       // get random Origine
-      origine = new PVector(random(0, width), random(0, height));
+      origine = getOrigine();
       // get random Destination
-      destination =new PVector(random(0, width), random(0, height)); 
+      destination =getDestination();
 
       //create new car
       Cars.add(new Car(origine, destination));
     }
   }
 
+  //---------------------------------------------------------------
+  // method to create random origine and destinations for the cars
+  //---------------------------------------------------------------
+  int selector = 0;
+
+  PVector getOrigine() {
+
+    PVector tempOrigine = new PVector(0, 0);
+
+    // select a random option 
+    selector = int(random(0, 4));
+
+    //Origine North
+    if (selector ==0) {
+      tempOrigine = new PVector(random(0, width), 10);
+    }
+    //Origine east
+    else if (selector ==1) {
+      tempOrigine = new PVector(width-10, random(0, height));
+    }
+    //Origine south
+    else if (selector ==2) {
+      tempOrigine = new PVector(random(0, width), height-10);
+    }
+    //Origine west
+    else {
+      tempOrigine = new PVector(10, random(0, height));
+    }
+
+    return tempOrigine;
+  }
+  PVector getDestination() {
+
+    PVector tempDestination = new PVector(0, 0);
+
+    // select a random option 
+    selector = int(random(0, 4));
+
+    //Destination North
+    if (selector ==0) {
+      tempDestination = new PVector(random(0, width), 10);
+    }
+    //Destination east
+    else if (selector ==1) {
+      tempDestination = new PVector(width-10, random(0, height));
+    }
+    //Destination south
+    else if (selector ==2) {
+      tempDestination = new PVector(random(0, width), height-10);
+    }
+    //Destination west
+    else{
+      tempDestination = new PVector(10, random(0, height));
+    }
+
+    return tempDestination;
+  }
   //---------------------------------------------------------------
   // method to check if cars are colliding
   //---------------------------------------------------------------
@@ -59,6 +117,7 @@
   {
     for (int i = 0; i < CarPopulation; i++) {
       Cars.get(i).applyForce(Cars.get(i).seek());
+      Cars.get(i).follow(path);
     }
   }
 
@@ -84,8 +143,10 @@
   {
     int diference = incomingCarNumber - CarPopulation;
 
-    origine = new PVector(random(0, width), random(0, height));
-    destination =new PVector(random(0, width), random(0, height));
+    // get random Origine
+    origine = getOrigine();
+    // get random Destination
+    destination =getDestination();
 
     if (diference > 0)
     {
@@ -115,28 +176,27 @@
       Cars.get(i).setCarSpeedLimit(carSpeedLimit);
     }
   }
-  
+
   //---------------------------------------------------------------
   // method for setting up Steering limit for all cars
   //---------------------------------------------------------------
-  
+
   void setCarSteerLimit(float SteerLimit)
   {
-   for (int i = 0; i < CarPopulation; i ++){
-    Cars.get(i).setCarSteerLimit(SteerLimit);
-   }
+    for (int i = 0; i < CarPopulation; i ++) {
+      Cars.get(i).setCarSteerLimit(SteerLimit);
+    }
   }
-  
+
   //---------------------------------------------------------------
   // method for setting up Repulsion force for all cars
   //---------------------------------------------------------------
-  
+
   void setRepulsionLimit(float RepulsionLimit)
   {
-   for (int i = 0; i < CarPopulation; i ++){
-    Cars.get(i).setRepulsionLimit(RepulsionLimit);
-   }
+    for (int i = 0; i < CarPopulation; i ++) {
+      Cars.get(i).setRepulsionLimit(RepulsionLimit);
+    }
   }
-  
 }
 
