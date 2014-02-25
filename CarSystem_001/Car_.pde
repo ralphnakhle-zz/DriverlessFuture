@@ -108,8 +108,6 @@ class Car {
     PVector steer = new PVector(0, 0);
     // A vector pointing from the position to the target
     PVector desired = PVector.sub(carDestination, position); 
-    // temporary target
-    PVector tempTarget;
 
     // check it the car has arrived to destination
     if (desired.mag()<carRadius) {
@@ -118,13 +116,6 @@ class Car {
       steer.mult(0);
       velocity.mult(0);
       acceleration.mult(0);
-    }
-
-    if (desired.x > desired.y) {
-      tempTarget = new PVector(carDestination.x, position.y);
-    }
-    else {
-      tempTarget = new PVector(position.x, carDestination.y);
     }
 
     // Normalize desired and scale to maximum speed
@@ -137,54 +128,6 @@ class Car {
 
     // return steer Force
     return steer;
-  }
-
-  // ----------------------------------------------------------------------
-  //  Interaction with other cars
-  // ----------------------------------------------------------------------
-  void checkCollision(Car other) {
-
-    // get distances between the Cars
-    PVector carVect = PVector.sub(other.position, position);
-
-    // calculate magnitude of the vector separating the Cars
-    float carDistance = carVect.mag();
-
-    // check if two cars are touching
-    if (carDistance < carRadius + other.carRadius) {
-      accidented = true;
-      acceleration.mult(0);
-      velocity.mult(0);
-      //accident ++;
-      // println("number of accidents: " + accident);
-    }
-
-    // calculate the safe zone according to speed
-    safeZone = velocity.mag()*40;
-    safeZone = constrain(safeZone, carRadius*1.7, 80);
-    // check if another car is in the safe zone
-    if (carDistance < safeZone + other.safeZone) {
-
-      // Calculate direction of repulseForce
-      PVector repulseForce = PVector.sub(other.position, position);         
-      // Distance between objects
-      float distance = repulseForce.mag();
-      // Limiting the distance to eliminate "extreme" results for very close or very far objects
-      // distance = constrain(distance, carRadius+1, 50.0);    
-      // Normalize vector 
-      repulseForce.normalize();                                           
-      // Calculate repulse Strength
-      float strength = repulseC/distance; 
-
-      // Get repulseForce vector --> magnitude * direction
-      repulseForce.mult(-1*strength);    
-      applyForce(repulseForce);
-
-      if (debug) {
-        stroke(0, 100, 200);
-        line(position.x, position.y, other.position.x, other.position.y);
-      }
-    }
   }
 
   // ----------------------------------------------------------------------
@@ -310,11 +253,59 @@ class Car {
     return normalPoint;
   }
 
+  // ----------------------------------------------------------------------
+  //  Interaction with other cars
+  // ----------------------------------------------------------------------
+  void checkCollision(Car other) {
+
+    // get distances between the Cars
+    PVector carVect = PVector.sub(other.position, position);
+
+    // calculate magnitude of the vector separating the Cars
+    float carDistance = carVect.mag();
+
+    // check if two cars are touching
+    if (carDistance < carRadius + other.carRadius) {
+      accidented = true;
+      acceleration.mult(0);
+      velocity.mult(0);
+      //accident ++;
+      // println("number of accidents: " + accident);
+    }
+
+    // calculate the safe zone according to speed
+    safeZone = velocity.mag()*40;
+    safeZone = constrain(safeZone, carRadius*1.7, 80);
+    // check if another car is in the safe zone
+    if (carDistance < safeZone + other.safeZone) {
+
+      // Calculate direction of repulseForce
+      PVector repulseForce = PVector.sub(other.position, position);         
+      // Distance between objects
+      float distance = repulseForce.mag();
+      // Limiting the distance to eliminate "extreme" results for very close or very far objects
+      // distance = constrain(distance, carRadius+1, 50.0);    
+      // Normalize vector 
+      repulseForce.normalize();                                           
+      // Calculate repulse Strength
+      float strength = repulseC/distance; 
+
+      // Get repulseForce vector --> magnitude * direction
+      repulseForce.mult(-1*strength);    
+      applyForce(repulseForce);
+
+      if (debug) {
+        stroke(0, 100, 200);
+        line(position.x, position.y, other.position.x, other.position.y);
+      }
+    }
+  }
+
+
   // A method that calculates and applies a steering force towards a target
   // STEER = DESIRED MINUS VELOCITY
   void seek(PVector target) {
     PVector desired = PVector.sub(target, position);  // A vector pointing from the position to the target
-
     // If the magnitude of desired equals 0, skip out of here
     // (We could optimize this to check if x and y are 0 to avoid mag() square root
     if (desired.mag() == 0) return;

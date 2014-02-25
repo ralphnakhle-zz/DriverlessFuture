@@ -11,11 +11,12 @@ class CarSystem
   // Vector for destination
   PVector destination;
 
+  Path systemPath ;
   // Constructor for the CarSystem class
-  CarSystem() {
+  CarSystem(Path tempPath) {
     //set variable Car population
     CarPopulation = 20;
-
+    systemPath = tempPath;
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();
   }
@@ -88,7 +89,7 @@ class CarSystem
       tempDestination = new PVector(random(0, width), height-10);
     }
     //Destination west
-    else{
+    else {
       tempDestination = new PVector(10, random(0, height));
     }
 
@@ -117,7 +118,8 @@ class CarSystem
   {
     for (int i = 0; i < CarPopulation; i++) {
       Cars.get(i).applyForce(Cars.get(i).seek());
-      Cars.get(i).follow(path);
+
+      Cars.get(i).follow(systemPath);
     }
   }
 

@@ -11,7 +11,7 @@ ControlP5 cp5;
 int accident = 0;
 
 
-CarSystem systemOfCars = new CarSystem();
+CarSystem systemOfCars;
 
 // A path object (series of connected points)
 Path path ;
@@ -23,13 +23,14 @@ boolean debug = true;
 //  FUNCTIONS
 // ----------------------------------------------------------------------
 void setup() {
+  size(900, 700);
   cp5 = new ControlP5(this);
   gui = new GUI();
-  size(900, 700);
-  systemOfCars.init();
 
   // Call a function to generate new Path object
   newPath(160);
+  systemOfCars = new CarSystem(path);
+  systemOfCars.init();
 }
 
 // ----------------------------------------------------------------------
@@ -69,15 +70,14 @@ void draw() {
   // Display the road
   path.display();
 
-  // draw the Gui bar
-  fill(255, 50);
-  rect(0, 0, width, 80);
-
   // Call all functions related to Cars
   systemOfCars.checkCarCollisionInSystem();
   systemOfCars.applyForces();
   systemOfCars.run();
 
+  // draw the Gui bar
+  fill(255, 50);
+  rect(0, 0, width, 80);
   // text
   fill(255);
   text("Press space bar to enable and disable toggle lines", 20, height-20);
