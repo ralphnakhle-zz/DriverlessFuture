@@ -71,7 +71,6 @@ void draw() {
   path.display();
 
   // Call all functions related to Cars
-  systemOfCars.checkCarCollisionInSystem();
   systemOfCars.applyForces();
   systemOfCars.run();
 

@@ -95,20 +95,6 @@ class CarSystem
 
     return tempDestination;
   }
-  //---------------------------------------------------------------
-  // method to check if cars are colliding
-  //---------------------------------------------------------------
-
-  void checkCarCollisionInSystem() {
-
-    for (int i = 0; i < CarPopulation; i++ ) {
-      for (int c = 0; c < CarPopulation; c++) {
-        if (i!=c) {
-          Cars.get(i).checkCollision(Cars.get(c));
-        }
-      }
-    }
-  }
 
   //---------------------------------------------------------------
   // method to apply forces to car system
@@ -134,6 +120,8 @@ class CarSystem
       Cars.get(i).update();
       //display the car
       Cars.get(i).display();
+      
+       Cars.get(i).applyBehaviors(Cars);
     }
   }
 

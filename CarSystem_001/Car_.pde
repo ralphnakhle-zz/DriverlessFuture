@@ -9,7 +9,7 @@ class Car {
   PVector acceleration= new PVector(0, 0);
 
   // Radius of the Car
-  float carRadius = 10;
+  float carRadius = 8;
 
   // car safe zone
   float safeZone;
@@ -55,6 +55,16 @@ class Car {
     acceleration.mult(0);
   }
 
+
+  void applyBehaviors(ArrayList<Car> Cars) {
+    PVector separateForce = separate(Cars);
+    //  PVector seekForce = seek(new PVector(mouseX,mouseY));
+    separateForce.mult(2);
+    //  seekForce.mult(1);
+    applyForce(separateForce);
+  }
+
+
   // apply Force methode
   void applyForce(PVector force) {
     acceleration.add(force);
@@ -81,14 +91,8 @@ class Car {
     else {
       fill(carColor);
     }
-    // draw body
+
     ellipse(position.x, position.y, carRadius*2, carRadius*2);
-    fill(0);
-    pushMatrix();
-    //rotate(seek().x);
-    //rotate(sin(seek().x));
-    ellipse(position.x, position.y+seek().y, carRadius/2, carRadius/2);
-    popMatrix();
 
     if (debug) {
       // safe zone
@@ -96,7 +100,23 @@ class Car {
       ellipse(position.x, position.y, safeZone*2, safeZone*2);
     }
   }
+  // used for the path following code
+  // A method that calculates and applies a steering force towards a target
+  // STEER = DESIRED MINUS VELOCITY
+  void seek(PVector target) {
+    PVector desired = PVector.sub(target, position);  // A vector pointing from the position to the target
+    // If the magnitude of desired equals 0, skip out of here
+    // (We could optimize this to check if x and y are 0 to avoid mag() square root
+    if (desired.mag() == 0) return;
 
+    // Normalize desired and scale to maximum speed
+    desired.normalize();
+    desired.mult(speedLimit);
+    // Steering = Desired minus Velocity
+    PVector steer = PVector.sub(desired, velocity);
+    steer.limit(steerLimit*2);  // Limit to maximum steering force
+    applyForce(steer);
+  }
 
   // ----------------------------------------------------------------------
   //  Go towards destination code
@@ -256,68 +276,43 @@ class Car {
   // ----------------------------------------------------------------------
   //  Interaction with other cars
   // ----------------------------------------------------------------------
-  void checkCollision(Car other) {
-
-    // get distances between the Cars
-    PVector carVect = PVector.sub(other.position, position);
-
-    // calculate magnitude of the vector separating the Cars
-    float carDistance = carVect.mag();
-
-    // check if two cars are touching
-    if (carDistance < carRadius + other.carRadius) {
-      accidented = true;
-      acceleration.mult(0);
-      velocity.mult(0);
-      //accident ++;
-      // println("number of accidents: " + accident);
-    }
-
+  // Separation
+  // Method checks for nearby vehicles and steers away
+  PVector separate (ArrayList<Car> cars) {
     // calculate the safe zone according to speed
     safeZone = velocity.mag()*40;
-    safeZone = constrain(safeZone, carRadius*1.7, 80);
-    // check if another car is in the safe zone
-    if (carDistance < safeZone + other.safeZone) {
 
-      // Calculate direction of repulseForce
-      PVector repulseForce = PVector.sub(other.position, position);         
-      // Distance between objects
-      float distance = repulseForce.mag();
-      // Limiting the distance to eliminate "extreme" results for very close or very far objects
-      // distance = constrain(distance, carRadius+1, 50.0);    
-      // Normalize vector 
-      repulseForce.normalize();                                           
-      // Calculate repulse Strength
-      float strength = repulseC/distance; 
-
-      // Get repulseForce vector --> magnitude * direction
-      repulseForce.mult(-1*strength);    
-      applyForce(repulseForce);
-
-      if (debug) {
-        stroke(0, 100, 200);
-        line(position.x, position.y, other.position.x, other.position.y);
+    PVector sum = new PVector();
+    int count = 0;
+    // For every boid in the system, check if it's too close
+    for (Car other : cars) {
+      float d = PVector.dist(position, other.position);
+      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+      if ((d > 0) && (d < safeZone)) {
+        // Calculate vector pointing away from neighbor
+        PVector diff = PVector.sub(position, other.position);
+        diff.normalize();
+        diff.div(d);        // Weight by distance
+        sum.add(diff);
+        count++;            // Keep track of how many
       }
     }
+    // Average -- divide by how many
+    if (count > 0) {
+      sum.div(count);
+      // Our desired vector is the average scaled to maximum speed
+      sum.normalize();
+      sum.mult(speedLimit);
+      // Implement Reynolds: Steering = Desired - Velocity
+      sum.sub(velocity);
+      sum.limit(steerLimit);
+    }
+    return sum;
   }
 
 
-  // A method that calculates and applies a steering force towards a target
-  // STEER = DESIRED MINUS VELOCITY
-  void seek(PVector target) {
-    PVector desired = PVector.sub(target, position);  // A vector pointing from the position to the target
-    // If the magnitude of desired equals 0, skip out of here
-    // (We could optimize this to check if x and y are 0 to avoid mag() square root
-    if (desired.mag() == 0) return;
 
-    // Normalize desired and scale to maximum speed
-    desired.normalize();
-    desired.mult(speedLimit);
-    // Steering = Desired minus Velocity
-    PVector steer = PVector.sub(desired, velocity);
-    steer.limit(steerLimit*2);  // Limit to maximum steering force
-    applyForce(steer);
-  }
+
   //---------------------------------------------------------------
   // Functions for mapping Speed, Steering and Repulsion forces to the knob values.
   //---------------------------------------------------------------
