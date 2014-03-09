@@ -35,7 +35,7 @@ class Car {
   // car Angle
   float carAngle = velocity.heading2D() + PI/2;
   float targetCarAngle = 0;
-  float easing = 0.1;
+  float easing = 0.2;
 
 
 
@@ -108,7 +108,7 @@ class Car {
     rotate(targetCarAngle);
     beginShape();
     rectMode(CENTER);
-    rect(0, 0, carRadius, carRadius*2);
+    rect(0, carRadius, carRadius, carRadius*2);
     endShape(CLOSE);
     popMatrix();
   }
