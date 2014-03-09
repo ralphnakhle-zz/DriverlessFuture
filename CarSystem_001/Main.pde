@@ -1,15 +1,8 @@
-//importing controll P5 Library
-import controlP5.*;
-ControlP5 cp5;
+
 
 // ----------------------------------------------------------------------
 // GLOBAL VARIABLES
 // ----------------------------------------------------------------------
-// set the total numbers of Car 
-
-// keep track of number of accident
-int accident = 0;
-
 
 CarSystem systemOfCars;
 
@@ -17,18 +10,17 @@ CarSystem systemOfCars;
 Path path ;
 
 // Using this variable to toggle between drawing the lines or not
-boolean debug = true;
+boolean debug = false;
 
 // ----------------------------------------------------------------------
 //  FUNCTIONS
 // ----------------------------------------------------------------------
 void setup() {
   size(900, 700);
-  cp5 = new ControlP5(this);
-  gui = new GUI();
+
 
   // Call a function to generate new Path object
-  newPath(160);
+  newPath(180);
   systemOfCars = new CarSystem(path);
   systemOfCars.init();
 }
@@ -37,28 +29,6 @@ void setup() {
 //  GUI FUNCTIONS 
 // ----------------------------------------------------------------------
 
-// Initializing gui
-GUI gui;
-
-void CarKnob(int CarNumber) {
-  if (CarNumber > 50) {
-    CarNumber = 50;
-  }
-  systemOfCars.setCarPopulation(CarNumber);
-}
-
-void SpeedKnob(float CarSpeed) {
-  systemOfCars.setCarSpeedLimit(CarSpeed);
-}
-
-void SteeringKnob(float CarSteer) {
-  systemOfCars.setCarSteerLimit(CarSteer);
-}
-
-void RepulsionForce(int RepulsionForce) {
-  systemOfCars.setRepulsionLimit(RepulsionForce);
-}
-
 // ----------------------------------------------------------------------
 //  DRAW FUNCTION
 // ----------------------------------------------------------------------
@@ -66,25 +36,29 @@ void RepulsionForce(int RepulsionForce) {
 void draw() {
 
   // draw the background
-  background(20, 45, 55);
+  background(0,10,10);
   // Display the road
   path.display();
 
   // Call all functions related to Cars
-  systemOfCars.applyForces();
   systemOfCars.run();
 
   // draw the Gui bar
-  fill(255, 50);
-  rect(0, 0, width, 80);
+  rectMode(CORNER);
+  fill(0, 150);
+  noStroke();
+ // rect(0, 0, width, 80);
+ 
   // text
   fill(255);
-  text("Press space bar to enable and disable toggle lines", 20, height-20);
+  //text("Press space bar to enable and disable toggle lines", 20, 20);
 }
 // creates a grid of point for the path class
 void newPath(int spacer) {
 
   path = new Path();
+ // path.addPoint(0, 0);
+ // path.addPoint(height, height);
   for ( int g = 0; g <width+spacer/spacer; g++) {
     path.addPoint(spacer*g, 0);
     path.addPoint(spacer*g, height);

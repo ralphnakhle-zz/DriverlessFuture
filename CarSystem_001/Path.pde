@@ -24,14 +24,27 @@ class Path {
   // Draw the path
   void display() {
     // Draw thick line for radius
-    stroke(30, 50, 75);
+    stroke(255, 50);
+    strokeWeight(radius*2+2);
+    noFill();
+
+    for (int v = 0; v < points.size()-1; v++ ) {
+      line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
+    }
+    stroke(10,20,20);
     strokeWeight(radius*2);
     noFill();
 
     for (int v = 0; v < points.size()-1; v++ ) {
       line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
     }
-    strokeWeight(1);
+    strokeWeight(2);
+    stroke(255,50);
+    for ( int h = 0; h< width/radius; h++) {
+      for ( int v = 0; v< height/radius; v++) {
+        point(radius*h, radius*v);
+      }
+    }
   }
 }
 

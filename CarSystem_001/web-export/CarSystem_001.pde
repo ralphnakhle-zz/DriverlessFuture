@@ -1,4 +1,59 @@
 
+class CarSystem 
+{
+  int CarPopulation;  
+
+  //List Array containing the cars
+  ArrayList <Car> Cars;
+
+  // Vector for origine
+  PVector origine;
+  // Vector for destination
+  PVector destination;
+
+  Path systemPath ;
+  // Constructor for the CarSystem class
+  CarSystem(Path tempPath) {
+    //set variable Car population
+    CarPopulation = 30;
+    systemPath = tempPath;
+    // initialize our array list of "Cars"
+    Cars = new ArrayList<Car>();
+  }
+
+  //---------------------------------------------------------------
+  // Initialize method to add the default number of cars
+  //---------------------------------------------------------------
+
+  void init() {
+    for (int i = 0; i < CarPopulation; i ++) {
+      //create new car
+      Cars.add(new Car());
+    }
+  }
+
+
+ 
+  //---------------------------------------------------------------
+  // method to display our car system
+  //---------------------------------------------------------------
+
+  void run()
+  {
+    for (int i = 0; i< CarPopulation; i++) {
+      //update position
+      Cars.get(i).update();
+      //display the car
+      Cars.get(i).display();
+
+      Cars.get(i).applyBehaviors(Cars);
+
+      Cars.get(i).follow(systemPath);
+    }
+  }
+}
+
+
 class Car {
 
   // Car position
@@ -14,7 +69,8 @@ class Car {
   // car safe zone
   float safeZone;
 
-
+  // repulse Constant
+  float repulseC = 6;
 
   // variable for speed limit
   float speedLimit = 3;
@@ -23,7 +79,7 @@ class Car {
   float steerLimit = 0.3;  
 
   // car color
-  color carColor = color(250, 250, 170);
+  color carColor = color(250, 220, 0);
 
   // check if the car had an accident
   boolean accidented = false;
@@ -31,12 +87,6 @@ class Car {
   // origin
   PVector carOrigine;
   PVector carDestination;
-
-  // car Angle
-  float carAngle = velocity.heading2D() + PI/2;
-  float targetCarAngle = 0;
-  float easing = 0.1;
-
 
 
 
@@ -80,10 +130,9 @@ class Car {
   //  Car display
   // ----------------------------------------------------------------------  
   void display() {
-    // draw debuging info
+
     if (debug) {
-      strokeWeight(1);
-      stroke(255, 60, 0,150);
+      stroke(255, 60, 0);
       line(position.x, position.y, carDestination.x, carDestination.y);
       // draw target lines and dot
       fill(255, 60, 0);
@@ -93,19 +142,12 @@ class Car {
 
     fill(carColor);
     noStroke();
-
-    carAngle = velocity.heading2D() + PI/2;
-
-    float dir = (carAngle - targetCarAngle) / TWO_PI;
-    dir -= round( dir );
-    dir *= TWO_PI;
-
-    targetCarAngle += dir * easing;
-
+    // Draw a triangle rotated in the direction of velocity
+    float theta = velocity.heading2D() + PI/2;
 
     pushMatrix();
     translate(position.x, position.y);
-    rotate(targetCarAngle);
+    rotate(theta);
     beginShape();
     rectMode(CENTER);
     rect(0, 0, carRadius, carRadius*2);
@@ -126,7 +168,7 @@ class Car {
     // A vector pointing from the position to the target
     PVector desired = PVector.sub(carDestination, position); 
     PVector tempDesired;
-
+    
     if (abs(desired.x)>= abs(desired.y)) {
       tempDesired = new PVector(desired.x, 0);
     }
@@ -134,7 +176,7 @@ class Car {
     else {
       tempDesired = new PVector(0, desired.y);
     }
-    // stroke(255);
+   // stroke(255);
     //line(position.x, position.y, tempDesired.x, tempDesired.y);
     // check it the car has arrived to destination
     if (desired.mag()<carRadius*3) {
@@ -235,7 +277,7 @@ class Car {
     }
 
     // Only if the distance is greater than the path's radius do we bother to steer
-    if (worldRecord > p.radius/4) {
+    if (worldRecord > p.radius-carRadius) {
       seekPath(target);
     }
   }
@@ -287,7 +329,7 @@ class Car {
     desired.mult(speedLimit);
     // Steering = Desired minus Velocity
     PVector steer = PVector.sub(desired, velocity);
-    steer.limit(steerLimit*3);  // Limit to maximum steering force
+    steer.limit(steerLimit*2);  // Limit to maximum steering force
     applyForce(steer);
   }
 
@@ -299,7 +341,7 @@ class Car {
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
     // calculate the safe zone according to speed
-    safeZone = 20;
+    safeZone = velocity.mag()*40;
 
     PVector sum = new PVector();
     int count = 0;
@@ -388,4 +430,146 @@ class Car {
     return tempDestination;
   }
 }
+
+// ----------------------------------------------------------------------
+//  GUI class
+// ----------------------------------------------------------------------
+
+class GUI {
+
+
+  // ----------------------------------------------------------------------
+  //  GUI KNOBS
+  // ----------------------------------------------------------------------
+  // Knob function from ControlP5 - All parameters of Knobs 
+  GUI() {
+             ;
+                  
+  }
+} 
+
+
+
+// ----------------------------------------------------------------------
+// GLOBAL VARIABLES
+// ----------------------------------------------------------------------
+
+CarSystem systemOfCars;
+
+// A path object (series of connected points)
+Path path ;
+
+// Using this variable to toggle between drawing the lines or not
+boolean debug = false;
+
+// ----------------------------------------------------------------------
+//  FUNCTIONS
+// ----------------------------------------------------------------------
+void setup() {
+  size(900, 700);
+
+
+  // Call a function to generate new Path object
+  newPath(180);
+  systemOfCars = new CarSystem(path);
+  systemOfCars.init();
+}
+
+// ----------------------------------------------------------------------
+//  GUI FUNCTIONS 
+// ----------------------------------------------------------------------
+
+// ----------------------------------------------------------------------
+//  DRAW FUNCTION
+// ----------------------------------------------------------------------
+
+void draw() {
+
+  // draw the background
+  background(0, 25, 35);
+  // Display the road
+  path.display();
+
+  // Call all functions related to Cars
+  systemOfCars.run();
+
+  // draw the Gui bar
+  rectMode(CORNER);
+  fill(0, 150);
+  noStroke();
+ // rect(0, 0, width, 80);
+ 
+  // text
+  fill(255);
+  //text("Press space bar to enable and disable toggle lines", 20, 20);
+}
+// creates a grid of point for the path class
+void newPath(int spacer) {
+
+  path = new Path();
+ // path.addPoint(0, 0);
+ // path.addPoint(height, height);
+  for ( int g = 0; g <width+spacer/spacer; g++) {
+    path.addPoint(spacer*g, 0);
+    path.addPoint(spacer*g, height);
+    path.addPoint(spacer*(g+1), height);
+  }
+  for ( int g = 0; g <height+spacer/spacer; g++) {
+    path.addPoint(0, spacer*g);
+    path.addPoint(width, spacer*g);
+    path.addPoint(width, spacer*(g+1));
+  }
+}
+
+// press space bar to able and disable collision and target lines.
+public void keyPressed() {
+  if (key == ' ') {
+    debug = !debug;
+  }
+}
+
+//Based on Path Following
+// by Daniel Shiffman <http://www.shiffman.net>
+// The Nature of Code
+
+class Path {
+
+  // A Path is an arraylist of points (PVector objects)
+  ArrayList<PVector> points;
+  // A path has a radius, i.e how far is it ok for the boid to wander off
+  float radius;
+
+  Path() {
+    // Arbitrary radius of 20
+    radius = 20;
+    points = new ArrayList<PVector>();
+  }
+
+  // Add a point to the path
+  void addPoint(float x, float y) {
+    PVector point = new PVector(x, y);
+    points.add(point);
+  }
+
+  // Draw the path
+  void display() {
+    // Draw thick line for radius
+    stroke(100, 120, 130);
+    strokeWeight(radius*2+2);
+    noFill();
+
+    for (int v = 0; v < points.size()-1; v++ ) {
+      line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
+    }
+    stroke(10, 30, 55);
+    strokeWeight(radius*2);
+    noFill();
+
+    for (int v = 0; v < points.size()-1; v++ ) {
+      line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
+    }
+    strokeWeight(1);
+  }
+}
+
 
