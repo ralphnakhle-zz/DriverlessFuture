@@ -15,7 +15,7 @@ class CarSystem
   // Constructor for the CarSystem class
   CarSystem(Path tempPath) {
     //set variable Car population
-    CarPopulation = 30;
+    CarPopulation = 40;
     systemPath = tempPath;
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();

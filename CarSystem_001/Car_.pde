@@ -14,8 +14,6 @@ class Car {
   // car safe zone
   float safeZone;
 
-
-
   // variable for speed limit
   float speedLimit = 3;
 
@@ -46,7 +44,6 @@ class Car {
     carDestination = getDestination();
   }
 
-
   // update methode
   void update() {
     velocity.add(acceleration);
@@ -75,7 +72,6 @@ class Car {
   }
 
 
-
   // ----------------------------------------------------------------------
   //  Car display
   // ----------------------------------------------------------------------  
@@ -83,7 +79,7 @@ class Car {
     // draw debuging info
     if (debug) {
       strokeWeight(1);
-      stroke(255, 60, 0,150);
+      stroke(255, 60, 0, 150);
       line(position.x, position.y, carDestination.x, carDestination.y);
       // draw target lines and dot
       fill(255, 60, 0);
@@ -108,7 +104,9 @@ class Car {
     rotate(targetCarAngle);
     beginShape();
     rectMode(CENTER);
-    rect(0, carRadius, carRadius, carRadius*2);
+    rect(0, carRadius/2, carRadius, carRadius*2);
+    // fill(250, 100, 0);
+    //ellipse(0, carRadius/2, carRadius/2, carRadius/2);
     endShape(CLOSE);
     popMatrix();
   }
@@ -235,8 +233,23 @@ class Car {
     }
 
     // Only if the distance is greater than the path's radius do we bother to steer
-    if (worldRecord > p.radius/4) {
+    if (worldRecord > p.radius/2) {
+      PVector offset = new PVector(10, 10);
+      String carDirection = getDirection(velocity.get());
+      if (carDirection == "West" ||carDirection == "South" ) {
+        target.sub(offset);
+      }
+
+      if (carDirection == "East" ||carDirection == "North" ) {
+        target.add(offset);
+      }
+
       seekPath(target);
+
+      if (debug) {
+        stroke(200);
+        line(target.x, target.y, position.x, position.y);
+      }
     }
   }
 
@@ -245,18 +258,19 @@ class Car {
 
     String direction = "?";
     float currentAngle = abs(currentVelocity.heading());
-    if (currentAngle < TWO_PI-HALF_PI/2 || currentVelocity.heading() <= HALF_PI/2) {
-      direction = "East" ;
-    }
-    if (currentAngle > HALF_PI/2 && currentVelocity.heading() <= PI-HALF_PI/2) {
-      direction = "South" ;
-    }
-    if (currentAngle > PI-HALF_PI/2 && currentVelocity.heading() <= PI+HALF_PI/2) {
-      direction = "West" ;
-    }
-    if (currentAngle > PI+HALF_PI/2 && currentVelocity.heading() <= TWO_PI-HALF_PI/2) {
-      direction = "North" ;
-    }
+     if (currentAngle > 0 - HALF_PI/2 && currentAngle <= HALF_PI/2 ) {
+    direction = "East" ;
+  }
+  else if (currentAngle > HALF_PI/2 && currentAngle <= PI-HALF_PI/2) {
+    direction = "South" ;
+  }
+  else if (currentAngle > PI-HALF_PI/2 || currentAngle <= 0-PI+HALF_PI/2) {
+    direction = "West" ;
+  }
+  else if (currentAngle < 0-(HALF_PI/2) && currentAngle > 0- PI+HALF_PI/2) {
+    direction = "North" ;
+    
+  }
 
     return direction ;
   }
@@ -299,7 +313,7 @@ class Car {
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
     // calculate the safe zone according to speed
-    safeZone = 20;
+    safeZone = 40;
 
     PVector sum = new PVector();
     int count = 0;
@@ -326,6 +340,8 @@ class Car {
       sum.sub(velocity);
       sum.limit(steerLimit);
     }
+
+
     return sum;
   }
 
