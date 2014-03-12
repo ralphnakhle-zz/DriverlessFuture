@@ -21,7 +21,7 @@ class Car {
   float steerLimit = 0.3;  
 
   // car color
-  color carColor = color(250, 250, 170);
+  color carColor = color(100);
 
   // check if the car had an accident
   boolean accidented = false;
@@ -40,7 +40,7 @@ class Car {
 
   // constructor
   Car() {
-    position = getOrigine();
+    position = getDestination();
     carDestination = getDestination();
   }
 
@@ -105,8 +105,15 @@ class Car {
     beginShape();
     rectMode(CENTER);
     rect(0, carRadius/2, carRadius, carRadius*2);
-    // fill(250, 100, 0);
-    //ellipse(0, carRadius/2, carRadius/2, carRadius/2);
+    if (velocity.mag() < speedLimit/2) {
+      fill(255, 0, 0);
+    }
+    else {      
+      fill(255, 150, 150);
+    }
+    rect(0, carRadius*1.25, carRadius, carRadius/2);
+    fill(255);
+    rect(0, 0-carRadius/2, carRadius, carRadius/2);
     endShape(CLOSE);
     popMatrix();
   }
@@ -258,19 +265,18 @@ class Car {
 
     String direction = "?";
     float currentAngle = abs(currentVelocity.heading());
-     if (currentAngle > 0 - HALF_PI/2 && currentAngle <= HALF_PI/2 ) {
-    direction = "East" ;
-  }
-  else if (currentAngle > HALF_PI/2 && currentAngle <= PI-HALF_PI/2) {
-    direction = "South" ;
-  }
-  else if (currentAngle > PI-HALF_PI/2 || currentAngle <= 0-PI+HALF_PI/2) {
-    direction = "West" ;
-  }
-  else if (currentAngle < 0-(HALF_PI/2) && currentAngle > 0- PI+HALF_PI/2) {
-    direction = "North" ;
-    
-  }
+    if (currentAngle > 0 - HALF_PI/2 && currentAngle <= HALF_PI/2 ) {
+      direction = "East" ;
+    }
+    else if (currentAngle > HALF_PI/2 && currentAngle <= PI-HALF_PI/2) {
+      direction = "South" ;
+    }
+    else if (currentAngle > PI-HALF_PI/2 || currentAngle <= 0-PI+HALF_PI/2) {
+      direction = "West" ;
+    }
+    else if (currentAngle < 0-(HALF_PI/2) && currentAngle > 0- PI+HALF_PI/2) {
+      direction = "North" ;
+    }
 
     return direction ;
   }
@@ -313,7 +319,7 @@ class Car {
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
     // calculate the safe zone according to speed
-    safeZone = 40;
+    safeZone = 25;
 
     PVector sum = new PVector();
     int count = 0;
@@ -351,54 +357,35 @@ class Car {
   //---------------------------------------------------------------
   int selector = 0;
 
-  PVector getOrigine() {
 
-    PVector tempOrigine = new PVector(0, 0);
-
-    // select a random option 
-    selector = int(random(0, 4));
-
-    //Origine North
-    if (selector ==0) {
-      tempOrigine = new PVector(random(0, width), 10);
-    }
-    //Origine east
-    else if (selector ==1) {
-      tempOrigine = new PVector(width-10, random(0, height));
-    }
-    //Origine south
-    else if (selector ==2) {
-      tempOrigine = new PVector(random(0, width), height-10);
-    }
-    //Origine west
-    else {
-      tempOrigine = new PVector(10, random(0, height));
-    }
-
-    return tempOrigine;
-  }
   PVector getDestination() {
 
     PVector tempDestination = new PVector(0, 0);
-
+    float randomP;
     // select a random option 
     selector = int(random(0, 4));
 
     //Destination North
     if (selector ==0) {
-      tempDestination = new PVector(random(0, width), 10);
+      randomP = gridSize* round(random(width/gridSize));
+      tempDestination = new PVector(randomP, 10);
     }
     //Destination east
     else if (selector ==1) {
-      tempDestination = new PVector(width-10, random(0, height));
+      randomP = gridSize* round(random(height/gridSize));
+
+      tempDestination = new PVector(width-10, randomP);
     }
     //Destination south
     else if (selector ==2) {
-      tempDestination = new PVector(random(0, width), height-10);
+      randomP = gridSize* round(random(width/gridSize));
+
+      tempDestination = new PVector(randomP, height-10);
     }
     //Destination west
     else {
-      tempDestination = new PVector(10, random(0, height));
+      randomP = gridSize* round(random(height/gridSize));
+      tempDestination = new PVector(10, randomP);
     }
 
     return tempDestination;

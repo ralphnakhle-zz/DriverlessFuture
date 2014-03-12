@@ -12,6 +12,8 @@ Path path ;
 // Using this variable to toggle between drawing the lines or not
 boolean debug = false;
 
+int gridSize = 180;
+
 // ----------------------------------------------------------------------
 //  FUNCTIONS
 // ----------------------------------------------------------------------
@@ -20,7 +22,7 @@ void setup() {
 
 
   // Call a function to generate new Path object
-  newPath(180);
+  newPath(gridSize);
   systemOfCars = new CarSystem(path);
   systemOfCars.init();
 }
