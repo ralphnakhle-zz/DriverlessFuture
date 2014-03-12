@@ -22,9 +22,9 @@ void setup() {
   newPath();
 
   // Each vehicle has different maxspeed and maxsteer for demo purposes
-  car1 = new Vehicle(new PVector(0, height/4), 5, 0.8, new PVector(width, height*.90));
-  car2 = new Vehicle(new PVector(0, height/3), 8, 0.9, new PVector(width, height*.75));
-  car3 = new Vehicle(new PVector(0, height/2), 5, 0.8, new PVector(width/2, height*.75));
+  car1 = new Vehicle(new PVector(width/2, height/4), 5, 0.8, new PVector(width/2, height*.90));
+  // car2 = new Vehicle(new PVector(width/2, height/3), 8, 0.9, new PVector(width, height*.75));
+  // car3 = new Vehicle(new PVector(width/2, height/2), 5, 0.8, new PVector(width/2, height*.75));
 }
 
 void draw() {
@@ -33,18 +33,18 @@ void draw() {
   path.display();
   // The boids follow the path
   car1.follow(path);
-  car2.follow(path);
-  car3.follow(path);
+  // car2.follow(path);
+  // car3.follow(path);
 
   car1.applyForce(car1.seekTarget());
-  car2.applyForce(car2.seekTarget());
-  car3.applyForce(car3.seekTarget());
+  // car2.applyForce(car2.seekTarget());
+  //car3.applyForce(car3.seekTarget());
 
 
   // Call the generic run method (update, borders, display, etc.)
   car1.run();
-  car2.run();
-  car3.run();
+  // car2.run();
+  // car3.run();
 
   // Instructions
   // fill(0);
@@ -54,9 +54,9 @@ void draw() {
 void newPath() {
   // A path is a series of connected points
   // A more sophisticated path might be a curve
- // loopPath();
+  // loopPath();
 
- gridPath(160);
+  gridPath(160);
 }
 // create grid patern
 void gridPath(int spacer) {

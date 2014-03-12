@@ -111,9 +111,9 @@ class Car {
     else {      
       fill(255, 150, 150);
     }
-    rect(0, carRadius*1.25, carRadius, carRadius/2);
+    rect(0, carRadius*1.25, carRadius, carRadius/3);
     fill(255);
-    rect(0, 0-carRadius/2, carRadius, carRadius/2);
+    rect(0, 0-carRadius/2, carRadius, carRadius/3);
     endShape(CLOSE);
     popMatrix();
   }
@@ -190,7 +190,7 @@ class Car {
       // Look at the direction of the line segment so we can seek a little bit ahead of the normal
       PVector pathDirection = PVector.sub(b, a);
       pathDirection.normalize();
-
+/*
       // check for out of segment normalPoint
       String generalDirection = getDirection(pathDirection);
       if (generalDirection == "East") {
@@ -225,7 +225,7 @@ class Car {
           normalPoint = b.get();
         }
       }
-
+*/
       // How far away are we from the path?
       float distance = PVector.dist(predictLoc, normalPoint);
 
