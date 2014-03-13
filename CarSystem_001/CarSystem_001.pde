@@ -51,5 +51,44 @@ class CarSystem
       Cars.get(i).follow(systemPath);
     }
   }
+  
+  //---------------------------------------------------------------
+  // Method to setting car population number Gui buttons
+  //---------------------------------------------------------------
+
+  void setCarPopulation(int incomingCarNumber)
+  {
+    int diference = incomingCarNumber - CarPopulation;
+
+    origine = new PVector(random(0, width), random(0, height));
+    destination =new PVector(random(0, width), random(0, height));
+
+    if (diference > 0)
+    {
+      for (int i = CarPopulation; i < incomingCarNumber; i++) {
+        Cars.add(new Car());
+      }
+      CarPopulation = incomingCarNumber;
+      println("ADD in class system carNumer::" + CarPopulation );
+    }
+    else if (diference < 0) {
+      for (int i = CarPopulation-1; i > incomingCarNumber; i--) {
+        Cars.remove(i);
+      }
+      CarPopulation = incomingCarNumber;
+      println("REMOVE in class system carNumer::" + CarPopulation );
+    }
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 }
 

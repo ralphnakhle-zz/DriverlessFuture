@@ -9,6 +9,8 @@ CarSystem systemOfCars;
 // A path object (series of connected points)
 Path path ;
 
+GUI gui ;
+
 // Using this variable to toggle between drawing the lines or not
 boolean debug = false;
 
@@ -20,6 +22,8 @@ int gridSize = 180;
 void setup() {
   size(900, 700);
 
+//initialize Gui 
+gui = new GUI();
 
   // Call a function to generate new Path object
   newPath(gridSize);
@@ -41,6 +45,8 @@ void draw() {
   background(0,10,10);
   // Display the road
   path.display();
+  
+
 
   // Call all functions related to Cars
   systemOfCars.run();
@@ -50,6 +56,10 @@ void draw() {
   fill(0, 150);
   noStroke();
  // rect(0, 0, width, 80);
+
+  //display Gui
+  gui.display();
+  gui.activateToggle();
  
   // text
   fill(255);
