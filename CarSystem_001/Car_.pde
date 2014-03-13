@@ -390,5 +390,27 @@ class Car {
 
     return tempDestination;
   }
+  
+ 
+  //----------------------------------------------------------------------
+  // method to set car speed limit - so it can be accessed from the Car System then the Gui - 
+  //----------------------------------------------------------------------
+ 
+    void setCarSpeedLimit(float incomingCarSpeedLimit)
+  {
+    speedLimit = incomingCarSpeedLimit;
+  }
+  
+  //----------------------------------------------------------------------
+  // method to set car steering limit - so it can be accessed from the Car System then the Gui
+  //----------------------------------------------------------------------
+  
+    void setCarSteerLimit(float incomingCarSteerLimit)
+  {
+    steerLimit = incomingCarSteerLimit;
+  }
+  
+  
+  
 }
 

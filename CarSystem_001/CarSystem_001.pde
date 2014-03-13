@@ -81,7 +81,28 @@ class CarSystem
   }
   
   
+    //---------------------------------------------------------------
+  // method for setting up speed limit for all cars
+  //---------------------------------------------------------------
+
+  void setCarSpeedLimit(float carSpeedLimit)
+  {
+    for (int i = 0; i < CarPopulation; i ++) {
+      Cars.get(i).setCarSpeedLimit(carSpeedLimit);
+    }
+  }
   
+  
+   //---------------------------------------------------------------
+  // method for setting up Steering limit for all cars
+  //---------------------------------------------------------------
+  
+  void setCarSteerLimit(float SteerLimit)
+  {
+   for (int i = 0; i < CarPopulation; i ++){
+    Cars.get(i).setCarSteerLimit(SteerLimit);
+   }
+  }
   
   
   
