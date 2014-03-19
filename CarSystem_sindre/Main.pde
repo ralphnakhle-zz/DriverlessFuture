@@ -14,20 +14,22 @@ GUI gui ;
 // Using this variable to toggle between drawing the lines or not
 boolean debug = false;
 
-int gridSize = 180;
+int CityGridSize = 180;
+
+char scenario;
 
 
 // ----------------------------------------------------------------------
 //  FUNCTIONS
 // ----------------------------------------------------------------------
 void setup() {
+  
   size(900, 700);
   //initialize Gui 
   gui = new GUI();
 
-  cityBg = new CityBg(20);
-  // Call a function to generate new Path object
-  cityBg.newGrid(gridSize);
+  // generate the background
+  cityBg = new CityBg(gridSize, 20);
 
   systemOfCars = new CarSystem();
   systemOfCars.init();
@@ -42,6 +44,8 @@ void draw() {
 
   // draw the background
   background(0, 10, 10);
+
+
   // Display the road
   cityBg.display();
 

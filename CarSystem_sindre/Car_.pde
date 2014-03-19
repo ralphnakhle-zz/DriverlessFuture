@@ -209,13 +209,12 @@ abstract class Car {
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
     // calculate the safe zone
-    safeZone = 60;
+    safeZone = 100;
     float safeAngle = 60;
     PVector sum = new PVector();
 
-
     int count = 0;
-    // For every boid in the system, check if it's too close
+    // For every car in the system, check if it's too close
     for (Car other : cars) {
       // get the distance between the two cars
       float d = PVector.dist(position, other.position);

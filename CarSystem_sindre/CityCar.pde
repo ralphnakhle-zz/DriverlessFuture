@@ -24,5 +24,6 @@ class CityCar extends Car {
 
     return tempDestination;
   }
+  
 }
 
