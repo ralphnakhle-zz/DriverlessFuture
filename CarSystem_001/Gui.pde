@@ -10,7 +10,7 @@ class GUI {
   // ----------------------------------------------------------------------
   // Knob function from ControlP5 - All parameters of Knobs 
   GUI() {
-             ;
+             
                   
   }
 } 

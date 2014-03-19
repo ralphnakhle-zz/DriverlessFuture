@@ -11,12 +11,12 @@ class CarSystem
   // Vector for destination
   PVector destination;
 
-  Path systemPath ;
+  Road systemRoad ;
   // Constructor for the CarSystem class
-  CarSystem(Path tempPath) {
+  CarSystem(Road tempRoad) {
     //set variable Car population
-    CarPopulation = 40;
-    systemPath = tempPath;
+    CarPopulation = 3;
+    systemRoad = tempRoad;
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();
   }
@@ -44,11 +44,12 @@ class CarSystem
       //update position
       Cars.get(i).update();
       //display the car
+     
       Cars.get(i).display();
 
       Cars.get(i).applyBehaviors(Cars);
 
-      Cars.get(i).follow(systemPath);
+      //Cars.get(i).follow(systemRoad);
     }
   }
 }

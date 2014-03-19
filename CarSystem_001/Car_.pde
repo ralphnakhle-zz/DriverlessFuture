@@ -2,7 +2,8 @@
 class Car {
 
   // Car position
-  PVector position;
+  PVector position = getDestination(new PVector(0, 0));
+
   //  change in position
   PVector velocity = new PVector(0, 0);
   // change in velocity
@@ -35,13 +36,13 @@ class Car {
   float targetCarAngle = 0;
   float easing = 0.2;
 
-
+  ArrayList<PVector> carPath;
+  int pathIndex = 1;
 
 
   // constructor
   Car() {
-    position = getDestination();
-    carDestination = getDestination();
+    carDestination = getDestination(position);
   }
 
   // update methode
@@ -78,12 +79,12 @@ class Car {
   void display() {
     // draw debuging info
     if (debug) {
-      strokeWeight(1);
-      stroke(255, 60, 0, 150);
-      line(position.x, position.y, carDestination.x, carDestination.y);
-      // draw target lines and dot
-      fill(255, 60, 0);
-      ellipse(carDestination.x, carDestination.y, carRadius*0.5, carRadius*0.5);
+      stroke(255, 60, 0, 80);
+
+      strokeWeight(3);
+      for (int v = 0; v < carPath.size()-1; v++ ) {
+        line(carPath.get(v).x, carPath.get(v).y, carPath.get(v+1).x, carPath.get(v+1).y);
+      }
     }
     // draw car
 
@@ -128,29 +129,28 @@ class Car {
   // Daniel Shiffman <http://www.shiffman.net>
   PVector seekDestinationForce() {
     PVector steer = new PVector(0, 0);
+
+    PVector desired;
     // A vector pointing from the position to the target
-    PVector desired = PVector.sub(carDestination, position); 
-    PVector tempDesired;
+    desired = PVector.sub(carPath.get(pathIndex), position); 
 
-    if (abs(desired.x)>= abs(desired.y)) {
-      tempDesired = new PVector(desired.x, 0);
+    if (desired.mag()<30 && pathIndex == 1) {  
+      pathIndex = 2;  
+      desired = PVector.sub(carPath.get(pathIndex), position);
     }
+    if (desired.mag()<30 && pathIndex == 2) { 
+     // generate new destination, send the real end as a starting point 
+      getDestination(carPath.get(3));
+      pathIndex = 1;  
 
-    else {
-      tempDesired = new PVector(0, desired.y);
-    }
-    // stroke(255);
-    //line(position.x, position.y, tempDesired.x, tempDesired.y);
-    // check it the car has arrived to destination
-    if (desired.mag()<carRadius*3) {
-      carDestination = getDestination();
+      desired = PVector.sub(carPath.get(pathIndex), position);
     }
 
     // Normalize desired and scale to maximum speed
-    tempDesired.normalize();
-    tempDesired.mult(speedLimit);
+    desired.normalize();
+    desired.mult(speedLimit);
     // Steering = Desired minus velocity
-    steer = PVector.sub(tempDesired, velocity);
+    steer = PVector.sub(desired, velocity);
     // Limit to maximum steering force
     steer.limit(steerLimit);
 
@@ -163,7 +163,7 @@ class Car {
   // ----------------------------------------------------------------------
   // This function implements Craig Reynolds' path following algorithm
   // http://www.red3d.com/cwr/steer/PathFollow.html
-  void follow(Path p) {
+  void follow(Road p) {
 
     // Predict position 25 (arbitrary choice) frames ahead
     PVector predict = velocity.get();
@@ -171,13 +171,13 @@ class Car {
     predict.mult(20);
     PVector predictLoc = PVector.add(position, predict);
 
-    // Now we must find the normal to the path from the predicted position
+    // Now we must find the normal to the Road from the predicted position
     // We look at the normal for each line segment and pick out the closest one
     PVector normal = null;
     PVector target = null;
     float worldRecord = 1000000;  // Start with a very high record distance that can easily be beaten
 
-    // Loop through all points of the path
+    // Loop through all points of the Road
     for (int i = 0; i < p.points.size()-1; i++) {
 
       // Look at a line segment
@@ -188,45 +188,46 @@ class Car {
       PVector normalPoint = getNormalPoint(predictLoc, a, b);
 
       // Look at the direction of the line segment so we can seek a little bit ahead of the normal
-      PVector pathDirection = PVector.sub(b, a);
-      pathDirection.normalize();
-/*
-      // check for out of segment normalPoint
-      String generalDirection = getDirection(pathDirection);
-      if (generalDirection == "East") {
-        if (normalPoint.x < a.x ) {
-          normalPoint = a.get();
-        }
-        if (normalPoint.x > b.x ) {
-          normalPoint = b.get();
-        }
-      }
-      if (generalDirection == "West") {
-        if (normalPoint.x < b.x ) {
-          normalPoint = b.get();
-        }
-        if (normalPoint.x > a.x ) {
-          normalPoint = a.get();
-        }
-      }
-      if (generalDirection == "North") {
-        if (normalPoint.y > b.y ) {
-          normalPoint = b.get();
-        }
-        if (normalPoint.y < a.y ) {
-          normalPoint = a.get();
-        }
-      }  
-      if (generalDirection == "South") {
-        if (normalPoint.y > a.y ) {
-          normalPoint = a.get();
-        }
-        if (normalPoint.y < b.y ) {
-          normalPoint = b.get();
-        }
-      }
-*/
-      // How far away are we from the path?
+      PVector RoadDirection = PVector.sub(b, a);
+      RoadDirection.normalize();
+      /*
+   // check for out of segment normalPoint
+       String generalDirection = getDirection(RoadDirection);
+       if (generalDirection == "East") {
+       if (normalPoint.x < a.x ) {
+       normalPoint = a.get();
+       }
+       if (normalPoint.x > b.x ) {
+       normalPoint = b.get();
+       }
+       }
+       if (generalDirection == "West") {
+       if (normalPoint.x < b.x ) {
+       normalPoint = b.get();
+       }
+       if (normalPoint.x > a.x ) {
+       normalPoint = a.get();
+       }
+       }
+       if (generalDirection == "North") {
+       if (normalPoint.y > b.y ) {
+       normalPoint = b.get();
+       }
+       if (normalPoint.y < a.y ) {
+       normalPoint = a.get();
+       }
+       }  
+       if (generalDirection == "South") {
+       if (normalPoint.y > a.y ) {
+       normalPoint = a.get();
+       }
+       if (normalPoint.y < b.y ) {
+       normalPoint = b.get();
+       }
+       }
+       */
+
+      // How far away are we from the Road?
       float distance = PVector.dist(predictLoc, normalPoint);
 
       // Did we beat the record and find the closest line segment?
@@ -235,11 +236,11 @@ class Car {
         // If so the target we want to steer towards is the normal
         normal = normalPoint;
         target = normalPoint.get();
-        target.add(pathDirection);
+        target.add(RoadDirection);
       }
     }
 
-    // Only if the distance is greater than the path's radius do we bother to steer
+    // Only if the distance is greater than the Road's radius do we bother to steer
     if (worldRecord > p.radius/2) {
       PVector offset = new PVector(10, 10);
       String carDirection = getDirection(velocity.get());
@@ -252,11 +253,6 @@ class Car {
       }
 
       seekPath(target);
-
-      if (debug) {
-        stroke(200);
-        line(target.x, target.y, position.x, position.y);
-      }
     }
   }
 
@@ -307,7 +303,7 @@ class Car {
     desired.mult(speedLimit);
     // Steering = Desired minus Velocity
     PVector steer = PVector.sub(desired, velocity);
-    steer.limit(steerLimit*3);  // Limit to maximum steering force
+    steer.limit(steerLimit);  // Limit to maximum steering force
     applyForce(steer);
   }
 
@@ -355,40 +351,52 @@ class Car {
   //---------------------------------------------------------------
   // method to create random origine and destinations for the cars
   //---------------------------------------------------------------
-  int selector = 0;
 
-
-  PVector getDestination() {
+  PVector getDestination( PVector lastDestination) {
 
     PVector tempDestination = new PVector(0, 0);
-    float randomP;
-    // select a random option 
-    selector = int(random(0, 4));
+    float randomX;
+    float randomY;
 
-    //Destination North
-    if (selector ==0) {
-      randomP = gridSize* round(random(width/gridSize));
-      tempDestination = new PVector(randomP, 10);
-    }
-    //Destination east
-    else if (selector ==1) {
-      randomP = gridSize* round(random(height/gridSize));
+    randomX = gridSize* round(random(width/gridSize));
+    randomY = gridSize* round(random(height/gridSize));
 
-      tempDestination = new PVector(width-10, randomP);
-    }
-    //Destination south
-    else if (selector ==2) {
-      randomP = gridSize* round(random(width/gridSize));
-
-      tempDestination = new PVector(randomP, height-10);
-    }
-    //Destination west
-    else {
-      randomP = gridSize* round(random(height/gridSize));
-      tempDestination = new PVector(10, randomP);
-    }
+    tempDestination = new PVector(randomX, randomY);
+    // create a path to follow
+    getCarPath(lastDestination, tempDestination);
 
     return tempDestination;
+  }
+  // crete a costum set of points for the car to follow
+  void getCarPath(PVector start, PVector end) {
+    PVector offset = new PVector(0, 0);
+    int offsetDistance = 5;
+    carPath = new ArrayList<PVector>();
+    // end without offset
+    PVector realEnd = end;
+
+    if (end.x>=start.x) {
+      offset.add(new PVector(0, offsetDistance));
+    }
+    else if (end.x<start.x) {
+      offset.add(new PVector(0, -offsetDistance));
+    }
+    if (end.y>=start.y) {
+      offset.add(new PVector(-offsetDistance*2, 0));
+    }
+    else if (end.y<start.y) {
+      offset.add(new PVector(offsetDistance*2, 0));
+    }
+
+    start.add(offset);
+    end.add(offset);
+
+    PVector middle = new PVector(end.x, start.y);
+
+    carPath.add(start);
+    carPath.add(middle);
+    carPath.add(end);
+    carPath.add(realEnd);
   }
 }
 
