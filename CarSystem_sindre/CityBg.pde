@@ -2,16 +2,16 @@
 // by Daniel Shiffman <http://www.shiffman.net>
 // The Nature of Code
 
-class Road {
+class CityBg {
 
   // A Road is an arraylist of points (PVector objects)
   ArrayList<PVector> points;
   // A Road has a radius, i.e how far is it ok for the boid to wander off
   float radius;
 
-  Road() {
+  CityBg(float r) {
     // Arbitrary radius of 20
-    radius = 20;
+    radius = r;
     points = new ArrayList<PVector>();
   }
 
@@ -20,7 +20,21 @@ class Road {
     PVector point = new PVector(x, y);
     points.add(point);
   }
+  // creates a grid of points for the road
+  void newGrid(int spacer) {
 
+ 
+    for ( int g = 0; g <width+spacer/spacer; g++) {
+      addPoint(spacer*g, 0);
+      addPoint(spacer*g, height);
+      addPoint(spacer*(g+1), height);
+    }
+    for ( int g = 0; g <height+spacer/spacer; g++) {
+      addPoint(0, spacer*g);
+      addPoint(width, spacer*g);
+      addPoint(width, spacer*(g+1));
+    }
+  }
   // Draw the Road
   void display() {
     // Draw Roads

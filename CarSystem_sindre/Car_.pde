@@ -1,5 +1,5 @@
 
-class Car {
+abstract class Car {
 
   // Car position
   PVector position;
@@ -24,8 +24,6 @@ class Car {
   // car color
   color carColor = color(100);
 
-  // check if the car had an accident
-  boolean accidented = false;
 
   // car target and origine
   PVector carDestination;
@@ -38,6 +36,7 @@ class Car {
   //car path
   CarPath carPath;
   int pathIndex = 1;
+
 
 
   // constructor
@@ -62,7 +61,7 @@ class Car {
 
   void applyBehaviors(ArrayList<Car> Cars) {
     PVector separateForce = separate(Cars);
-    separateForce.mult(1.5);
+    separateForce.mult(1.6);
     followPath();
     applyForce(separateForce);
   }
@@ -229,13 +228,13 @@ class Car {
         float mainCarAngle = velocity.heading()+ PI/2;
         // convert car angle to degree
         mainCarAngle = map(mainCarAngle, -PI, PI, 0, 360);
-        
-        
-   //     if (diff.heading()+ PI/2 < mainCarAngle+safeAngle && diff.heading()+ PI/2 > mainCarAngle-safeAngle) {
+
+
+        if (diff.heading()+ PI/2 < mainCarAngle+safeAngle && diff.heading()+ PI/2 > mainCarAngle-safeAngle) {
           diff.div(d);        // Weight by distance
           sum.add(diff);
           count++;            // Keep track of how many
-      //  }
+        }
       }
     }
     // Average -- divide by how many
@@ -248,8 +247,6 @@ class Car {
       sum.sub(velocity);
       sum.limit(steerLimit/2);
     }
-
-
     return sum;
   }
 
@@ -258,21 +255,24 @@ class Car {
   // method to create random origine and destinations for the cars
   //---------------------------------------------------------------
 
-  PVector getDestination( PVector lastDestination) {
+  abstract PVector getDestination( PVector lastDestination); 
 
-    PVector tempDestination = new PVector(0, 0);
-    float randomX;
-    float randomY;
+  //----------------------------------------------------------------------
+  // method to set car speed limit - so it can be accessed from the Car System then the Gui - 
+  //----------------------------------------------------------------------
 
-    randomX = gridSize* round(random(width/gridSize));
-    randomY = gridSize* round(random(height/gridSize));
+  void setCarSpeedLimit(float incomingCarSpeedLimit)
+  {
+    speedLimit = incomingCarSpeedLimit;
+  }
 
-    tempDestination = new PVector(randomX, randomY);
+  //----------------------------------------------------------------------
+  // method to set car steering limit - so it can be accessed from the Car System then the Gui
+  //----------------------------------------------------------------------
 
-    // create a path to follow
-    carPath = new CarPath(lastDestination, tempDestination);
-
-    return tempDestination;
+  void setCarSteerLimit(float incomingCarSteerLimit)
+  {
+    steerLimit = incomingCarSteerLimit;
   }
 }
 

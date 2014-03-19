@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------
 //  GUI class
 // ----------------------------------------------------------------------
-/*
+
 class GUI {
 
   int controlMargin = width-width/10+10;
@@ -14,15 +14,10 @@ class GUI {
   // ----------------------------------------------------------------------
   // 
   GUI() {
-///<<<<<<< HEAD
-             
-                  
-//=======
-//>>>>>>> FETCH_HEAD
   }
 
   void display() {
-
+rectMode(CORNER);
 
     //Side bar display 
     noStroke();
@@ -110,14 +105,14 @@ class GUI {
 
       carNumber --;
 
-    //  systemOfCars.setCarPopulation(carNumber);
+      systemOfCars.setCarPopulation(carNumber);
       println(carNumber);
     }
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 491 && mouseY <= 521 && mousePressed) {
       carNumber++;
 
-     // systemOfCars.setCarPopulation(carNumber);
+      systemOfCars.setCarPopulation(carNumber);
       println(carNumber);
     }
 
@@ -141,7 +136,7 @@ class GUI {
 
         speedLimit -= 0.5;
 
-     //   systemOfCars.setCarSpeedLimit(speedLimit);
+        systemOfCars.setCarSpeedLimit(speedLimit);
         println(speedLimit);
       }
 
@@ -187,4 +182,4 @@ class GUI {
   
   
 }
-*/
+

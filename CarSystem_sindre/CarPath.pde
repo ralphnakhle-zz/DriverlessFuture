@@ -10,14 +10,15 @@ class CarPath {
   float radius;
   PVector start;
   PVector end;
+  int offsetDistance;
+  CarPath(PVector start_, PVector end_, int offsetDistance_) {
 
-  CarPath(PVector start_, PVector end_) {
-    // Arbitrary radius of 20
-    radius = 20;
     points = new ArrayList<PVector>();
     start = start_.get();
     end = end_.get();
+    offsetDistance = offsetDistance_;
     generatePath();
+    
   }
   int getSize() {
     int size = points.size();
@@ -25,7 +26,6 @@ class CarPath {
   }
   void generatePath() {
     PVector offset = new PVector(0, 0);
-    int offsetDistance = 10;
     // end without offset
     PVector realEnd = end.get();
 
