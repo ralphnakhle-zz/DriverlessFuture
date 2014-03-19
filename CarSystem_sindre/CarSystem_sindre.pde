@@ -49,7 +49,6 @@ class CarSystem
 
       Cars.get(i).applyBehaviors(Cars);
 
-    //  Cars.get(i).follow();
     }
   }
 }

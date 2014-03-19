@@ -12,7 +12,7 @@ Road road ;
 // Using this variable to toggle between drawing the lines or not
 boolean debug = false;
 
-int gridSize = 170;
+int gridSize = 180;
 
 // ----------------------------------------------------------------------
 //  FUNCTIONS
@@ -22,7 +22,7 @@ void setup() {
 
 
   // Call a function to generate new Path object
-  newPath(gridSize);
+  newRoad(gridSize);
   systemOfCars = new CarSystem(road);
   systemOfCars.init();
 }
@@ -47,8 +47,8 @@ void draw() {
 
 
 }
-// creates a grid of point for the path class
-void newPath(int spacer) {
+// creates a grid of point for the road class
+void newRoad(int spacer) {
 
   road = new Road();
  // path.addPoint(0, 0);

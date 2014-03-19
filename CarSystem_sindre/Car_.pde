@@ -63,7 +63,7 @@ class Car {
   void applyBehaviors(ArrayList<Car> Cars) {
     PVector separateForce = separate(Cars);
     separateForce.mult(1.5);
-followPath();
+    followPath();
     applyForce(separateForce);
   }
 
@@ -92,7 +92,7 @@ followPath();
     fill(carColor);
     noStroke();
 
-    carAngle = velocity.heading2D() + PI/2;
+    carAngle = velocity.heading() + PI/2;
 
     float dir = (carAngle - targetCarAngle) / TWO_PI;
     dir -= round( dir );
@@ -128,7 +128,7 @@ followPath();
   // A method that calculates a steering force towards a target and following a path
 
   void followPath() {
-
+    // PVector for the desired position
     PVector desired;
     // A vector pointing from the position to the first point of the path
     desired = PVector.sub(carPath.points.get(pathIndex), position); 
@@ -186,141 +186,7 @@ followPath();
     PVector normalPoint = PVector.add(a, ab);
     return normalPoint;
   }
-  /*
-  // ----------------------------------------------------------------------
-   //  Path Folowing
-   // ----------------------------------------------------------------------
-   // This function implements Craig Reynolds' path following algorithm
-   // http://www.red3d.com/cwr/steer/PathFollow.html
-   void follow() {
-   
-   // Predict position 25 (arbitrary choice) frames ahead
-   PVector predict = velocity.get();
-   predict.normalize();
-   predict.mult(20);
-   PVector predictLoc = PVector.add(position, predict);
-   
-   // Now we must find the normal to the Road from the predicted position
-   // We look at the normal for each line segment and pick out the closest one
-   PVector normal = null;
-   PVector target = null;
-   float worldRecord = 1000000;  // Start with a very high record distance that can easily be beaten
-   
-   // Loop through all points of the Road
-   for (int i = 0; i < carPath.getSize()-1; i++) {
-   
-   // Look at a line segment
-   PVector a = carPath.get(i);
-   PVector b = carPath.get(i+1);
-   
-   // Get the normal point to that line
-   PVector normalPoint = getNormalPoint(predictLoc, a, b);
-   
-   // Look at the direction of the line segment so we can seek a little bit ahead of the normal
-   PVector RoadDirection = PVector.sub(b, a);
-   RoadDirection.normalize();
-   
-   // check for out of segment normalPoint
-   String generalDirection = getDirection(RoadDirection);
-   if (generalDirection == "East") {
-   if (normalPoint.x < a.x ) {
-   normalPoint = a.get();
-   }
-   if (normalPoint.x > b.x ) {
-   normalPoint = b.get();
-   }
-   }
-   if (generalDirection == "West") {
-   if (normalPoint.x < b.x ) {
-   normalPoint = b.get();
-   }
-   if (normalPoint.x > a.x ) {
-   normalPoint = a.get();
-   }
-   }
-   if (generalDirection == "North") {
-   if (normalPoint.y > b.y ) {
-   normalPoint = b.get();
-   }
-   if (normalPoint.y < a.y ) {
-   normalPoint = a.get();
-   }
-   }  
-   if (generalDirection == "South") {
-   if (normalPoint.y > a.y ) {
-   normalPoint = a.get();
-   }
-   if (normalPoint.y < b.y ) {
-   normalPoint = b.get();
-   }
-   }
-   
-   
-   // How far away are we from the Road?
-   float distance = PVector.dist(predictLoc, normalPoint);
-   
-   // Did we beat the record and find the closest line segment?
-   if (distance < worldRecord) {
-   worldRecord = distance;
-   // If so the target we want to steer towards is the normal
-   normal = normalPoint;
-   target = normalPoint.get();
-   target.add(RoadDirection);
-   }
-   }
-   
-   // Only if the distance is greater than the Road's radius do we bother to steer
-   if (worldRecord > 40) {
-   PVector offset = new PVector(10, 10);
-   String carDirection = getDirection(velocity.get());
-   if (carDirection == "West" ||carDirection == "South" ) {
-   target.sub(offset);
-   }
-   
-   if (carDirection == "East" ||carDirection == "North" ) {
-   target.add(offset);
-   }
-   
-   seekPath(target);
-   }
-   }
-   
-   // find the direction the car is going
-   String getDirection(PVector currentVelocity) {
-   
-   String direction = "?";
-   float currentAngle = abs(currentVelocity.heading());
-   if (currentAngle > 0 - HALF_PI/2 && currentAngle <= HALF_PI/2 ) {
-   direction = "East" ;
-   }
-   else if (currentAngle > HALF_PI/2 && currentAngle <= PI-HALF_PI/2) {
-   direction = "South" ;
-   }
-   else if (currentAngle > PI-HALF_PI/2 || currentAngle <= 0-PI+HALF_PI/2) {
-   direction = "West" ;
-   }
-   else if (currentAngle < 0-(HALF_PI/2) && currentAngle > 0- PI+HALF_PI/2) {
-   direction = "North" ;
-   }
-   
-   return direction ;
-   }
-   
-   
-   // A function to get the normal point from a point (p) to a line segment (a-b)
-   // This function could be optimized to make fewer new Vector objects
-   PVector getNormalPoint(PVector p, PVector a, PVector b) {
-   // Vector from a to p
-   PVector ap = PVector.sub(p, a);
-   // Vector from a to b
-   PVector ab = PVector.sub(b, a);
-   ab.normalize(); // Normalize the line
-   // Project vector "diff" onto line by using the dot product
-   ab.mult(ap.dot(ab));
-   PVector normalPoint = PVector.add(a, ab);
-   return normalPoint;
-   }
-   */
+
   // used for the path following code
   void seek(PVector target) {
     PVector desired = PVector.sub(target, position);  // A vector pointing from the position to the target
@@ -343,22 +209,33 @@ followPath();
   // Separation
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
-    // calculate the safe zone according to speed
-    safeZone = 25;
-
+    // calculate the safe zone
+    safeZone = 60;
+    float safeAngle = 60;
     PVector sum = new PVector();
+
+
     int count = 0;
     // For every boid in the system, check if it's too close
     for (Car other : cars) {
+      // get the distance between the two cars
       float d = PVector.dist(position, other.position);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+
       if ((d > 0) && (d < safeZone)) {
         // Calculate vector pointing away from neighbor
         PVector diff = PVector.sub(position, other.position);
         diff.normalize();
-        diff.div(d);        // Weight by distance
-        sum.add(diff);
-        count++;            // Keep track of how many
+        float mainCarAngle = velocity.heading()+ PI/2;
+        // convert car angle to degree
+        mainCarAngle = map(mainCarAngle, -PI, PI, 0, 360);
+        
+        
+   //     if (diff.heading()+ PI/2 < mainCarAngle+safeAngle && diff.heading()+ PI/2 > mainCarAngle-safeAngle) {
+          diff.div(d);        // Weight by distance
+          sum.add(diff);
+          count++;            // Keep track of how many
+      //  }
       }
     }
     // Average -- divide by how many
@@ -369,7 +246,7 @@ followPath();
       sum.mult(speedLimit);
       // Implement Reynolds: Steering = Desired - Velocity
       sum.sub(velocity);
-      sum.limit(steerLimit);
+      sum.limit(steerLimit/2);
     }
 
 
