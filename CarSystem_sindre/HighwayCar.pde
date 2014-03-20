@@ -1,7 +1,7 @@
 // a subclass of car for city cars
-class CityCar extends Car {
+class HighwayCar extends Car {
 
-  CityCar() {
+  HighwayCar() {
     super();
   }
 
@@ -10,12 +10,13 @@ class CityCar extends Car {
   //---------------------------------------------------------------
 
   PVector getDestination( PVector lastDestination) {
+    println("H car");
     PVector tempDestination = new PVector(0, 0);
     float randomX;
     float randomY;
 
-    randomX = cityGridSize* round(random(-1, width/cityGridSize)+1);
-    randomY = cityGridSize* round(random(-1, height/cityGridSize)+1);
+    randomX = gridSize* round(random(-1, width/gridSize)+1);
+    randomY = gridSize* round(random(-1, height/gridSize)+1);
 
     tempDestination = new PVector(randomX, randomY);
 

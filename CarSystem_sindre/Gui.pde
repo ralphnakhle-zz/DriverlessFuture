@@ -17,7 +17,7 @@ class GUI {
   }
 
   void display() {
-rectMode(CORNER);
+    rectMode(CORNER);
 
     //Side bar display 
     noStroke();
@@ -124,7 +124,7 @@ rectMode(CORNER);
     // Car Speed Toggle Setup
     //--------------------------------------------------
 
-      if (speedLimit >= 10) {
+    if (speedLimit >= 10) {
       speedLimit = 10;
     }
 
@@ -132,29 +132,29 @@ rectMode(CORNER);
       speedLimit = 2;
     }
 
-      if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 551 && mouseY <= 577 && mousePressed) {
+    if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 551 && mouseY <= 577 && mousePressed) {
 
-        speedLimit -= 0.5;
+      speedLimit -= 0.5;
 
-        systemOfCars.setCarSpeedLimit(speedLimit);
-        println(speedLimit);
-      }
+      systemOfCars.setCarSpeedLimit(speedLimit);
+      println(speedLimit);
+    }
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 551 && mouseY <= 581 && mousePressed) {
-      
+
       speedLimit += 0.5;
 
       systemOfCars.setCarSpeedLimit(speedLimit);
       println(speedLimit);
     }
     text(int(speedLimit)*9 + "/mph", controlMargin+40, 540);
-  
-  
-  //--------------------------------------------------
+
+
+    //--------------------------------------------------
     // Car Speed Toggle Setup
     //--------------------------------------------------
 
-      if (steeringLimit >= 2) {
+    if (steeringLimit >= 2) {
       steeringLimit = 2;
     }
 
@@ -162,24 +162,34 @@ rectMode(CORNER);
       steeringLimit = 0.1;
     }
 
-      if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 611 && mouseY <= 637 && mousePressed) {
+    if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 611 && mouseY <= 637 && mousePressed) {
 
-        steeringLimit -= 0.1;
+      steeringLimit -= 0.1;
 
-        systemOfCars.setCarSteerLimit(steeringLimit);
-        println(steeringLimit);
-      }
+      systemOfCars.setCarSteerLimit(steeringLimit);
+      println(steeringLimit);
+    }
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 611 && mouseY <= 641 && mousePressed) {
-      
+
       steeringLimit += 0.1;
 
       systemOfCars.setCarSteerLimit(steeringLimit);
       println(steeringLimit);
     }
     text(int(steeringLimit*10), controlMargin+50, 600);
+
   }
   
-  
+      void mouseClicked() {
+      if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
+        scenario = 'C';
+      }
+      if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
+        scenario = 'H';
+      }
+    }
+    
+    
 }
 

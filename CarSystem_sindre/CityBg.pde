@@ -6,15 +6,16 @@ class CityBg {
 
   // A Road is an arraylist of points (PVector objects)
   ArrayList<PVector> points;
-  // the road width
-  float roadWidth;
-  int bgGridSize;
-  CityBg(int gridSize_, float r) {
-    // Arbitrary roadWidth of 20
-    roadWidth = r;
-    bgGridSize = gridSize;
+  // A Road has a radius, i.e how far is it ok for the boid to wander off
+  float radius;
+  int grid;
+
+  CityBg(float r, int grid_) {
+    // Arbitrary radius of 20
+    radius = r;
     points = new ArrayList<PVector>();
-    newGrid(bgGridSize);
+    grid = grid_;
+    newGrid(grid);
   }
 
   // Add a point to the Road
@@ -25,7 +26,7 @@ class CityBg {
   // creates a grid of points for the road
   void newGrid(int spacer) {
 
-
+ 
     for ( int g = 0; g <width+spacer/spacer; g++) {
       addPoint(spacer*g, 0);
       addPoint(spacer*g, height);
@@ -41,14 +42,14 @@ class CityBg {
   void display() {
     // Draw Roads
     stroke(255, 50);
-    strokeWeight(roadWidth*2+2);
+    strokeWeight(radius*2+2);
     noFill();
 
     for (int v = 0; v < points.size()-1; v++ ) {
       line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
     }
     stroke(10, 20, 20);
-    strokeWeight(roadWidth*2);
+    strokeWeight(radius*2);
     noFill();
 
     for (int v = 0; v < points.size()-1; v++ ) {
@@ -74,9 +75,9 @@ class CityBg {
     /// draw dot grid
     strokeWeight(2);
     stroke(255, 50);
-    for ( int h = 0; h< width/roadWidth; h++) {
-      for ( int v = 0; v< height/roadWidth; v++) {
-        point(roadWidth*h, roadWidth*v);
+    for ( int h = 0; h< width/radius; h++) {
+      for ( int v = 0; v< height/radius; v++) {
+        point(radius*h, radius*v);
       }
     }
   }

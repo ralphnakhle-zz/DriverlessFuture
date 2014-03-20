@@ -6,14 +6,15 @@ class CarSystem
   //List Array containing the cars
   ArrayList <Car> Cars;
 
- 
+  char carScenario;
 
-    // Constructor for the CarSystem class
-  CarSystem() {
+  // Constructor for the CarSystem class
+  CarSystem(char scenario_) {
     //set variable Car population
     CarPopulation = 40;
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();
+    carScenario = scenario_;
   }
 
   //---------------------------------------------------------------
@@ -23,7 +24,7 @@ class CarSystem
   void init() {
     for (int i = 0; i < CarPopulation; i ++) {
       //create new car
-      Cars.add(new CityCar());
+      getCar();
     }
   }
 
@@ -56,7 +57,7 @@ class CarSystem
     if (diference > 0)
     {
       for (int i = CarPopulation; i < incomingCarNumber; i++) {
-        Cars.add(new CityCar());
+        getCar();
       }
       CarPopulation = incomingCarNumber;
       println("ADD in class system carNumer::" + CarPopulation );
@@ -91,6 +92,32 @@ class CarSystem
   {
     for (int i = 0; i < CarPopulation; i ++) {
       Cars.get(i).setCarSteerLimit(SteerLimit);
+    }
+  }
+
+  // select the car depending on the scenario
+  void getCar() {
+    switch(scenario) {
+    case 'C': 
+      Cars.add(new CityCar());
+      break;
+
+    case 'P': 
+      // println("Scenario : P");  
+      break;
+
+    case 'H': 
+      Cars.add(new HighwayCar());
+
+      break;
+
+    case 'S': 
+      // println("Scenario : S"); 
+      break;
+
+    default:             // Default executes if the case labels
+      // println("Scenario : None");   
+      break;
     }
   }
 }
