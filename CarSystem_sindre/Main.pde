@@ -66,7 +66,6 @@ void draw() {
     break;
 
   case 'S': 
-    // println("Scenario : S"); 
     break;
 
   default:             
@@ -91,7 +90,7 @@ public void keyPressed() {
 }
 
 void mouseClicked() {  
-  gui.mouseClicked();
+  gui.mouseEvent();
   int controlMargin = width-width/10+10;
 
   if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 340) {

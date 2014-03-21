@@ -178,18 +178,35 @@ class GUI {
       println(steeringLimit);
     }
     text(int(steeringLimit*10), controlMargin+50, 600);
-
   }
-  
-      void mouseClicked() {
-      if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
-        scenario = 'C';
+
+  void mouseEvent() {
+    // city traffic button
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
+      scenario = 'C';
+    }
+    // highway button
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
+      scenario = 'H';
+    }
+    // Parking button
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 220 && mouseY <= 270) {
+      //  scenario = 'P';
+    }
+
+    // Shared comodity button
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 300 && mouseY <= 350) {
+      //  scenario = 'S';
+    }
+    // event triger
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 395 && mouseY <= 445) {
+      if (scenario == 'C') {
+        println("Ambulance!");
       }
-      if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
-        scenario = 'H';
+      if (scenario == 'H') {
+        println("Accident!");
       }
     }
-    
-    
+  }
 }
 

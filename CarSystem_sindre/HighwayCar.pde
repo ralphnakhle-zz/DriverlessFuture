@@ -10,7 +10,6 @@ class HighwayCar extends Car {
   //---------------------------------------------------------------
 
   PVector getDestination( PVector lastDestination) {
-    println("H car");
     PVector tempDestination = new PVector(0, 0);
     float randomX;
     float randomY;
