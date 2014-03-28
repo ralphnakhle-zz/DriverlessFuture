@@ -5,6 +5,8 @@ class CarSystem
 
   //List Array containing the cars
   ArrayList <Car> Cars;
+  ArrayList <Car> Ambulances;
+
 
   char carScenario;
 
@@ -14,6 +16,7 @@ class CarSystem
     CarPopulation = 40;
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();
+    Ambulances = new ArrayList<Car>();
     carScenario = scenario_;
   }
 
@@ -44,6 +47,15 @@ class CarSystem
       Cars.get(i).display();
 
       Cars.get(i).applyBehaviors(Cars);
+    }
+
+    if (Ambulances.size() >0) {
+      for (int a = 0; a< Ambulances.size(); a++) {
+        Ambulances.get(a).update();
+        //display the car
+        Ambulances.get(a).display();
+        Ambulances.get(a).applyBehaviors(Ambulances);
+      }
     }
   }
   //---------------------------------------------------------------
@@ -95,7 +107,21 @@ class CarSystem
     }
   }
 
+  //---------------------------------------------------------------
+  // method for trigger event 
+  //---------------------------------------------------------------
+  void triggerEvent() {
+    if (carScenario == 'C') {
+      println("Ambulance!");
+      Ambulances.add(new EmergencyVehicle());
+    }
+    if (carScenario == 'H') {
+      println("Accident!");
+    }
+  }
+  //---------------------------------------------------------------
   // select the car depending on the scenario
+  //---------------------------------------------------------------
   void getCar() {
     switch(scenario) {
     case 'C': 

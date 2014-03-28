@@ -15,7 +15,6 @@ GUI gui ;
 
 // Using this variable to toggle between drawing the lines or not
 boolean debug = false;
-int gridSize = 1;
 int cityGridSize = 180;
 char scenario;
 
@@ -75,7 +74,6 @@ void draw() {
 
   // run the car system
   systemOfCars.run();
-
   //display Gui
   gui.display();
   gui.activateToggle();

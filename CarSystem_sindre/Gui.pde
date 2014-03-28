@@ -18,10 +18,10 @@ class GUI {
 
   void display() {
     rectMode(CORNER);
-
+    strokeWeight(1);
     //Side bar display 
     noStroke();
-    fill(100, 100, 100, 200);
+    fill(50, 200);
     rect(width, 0, -width/10, height);
 
     //Header:
@@ -97,9 +97,9 @@ class GUI {
       carNumber = 60;
     }
 
-    if (carNumber < 3) {
-      carNumber = 4;
-    }
+    // if (carNumber < 3) {
+    //   carNumber = 4;
+    // }
 
     if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 491 && mouseY <= 517 && mousePressed) {
 
@@ -198,14 +198,12 @@ class GUI {
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 300 && mouseY <= 350) {
       //  scenario = 'S';
     }
+
+
     // event triger
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 395 && mouseY <= 445) {
-      if (scenario == 'C') {
-        println("Ambulance!");
-      }
-      if (scenario == 'H') {
-        println("Accident!");
-      }
+
+      systemOfCars.triggerEvent();
     }
   }
 }

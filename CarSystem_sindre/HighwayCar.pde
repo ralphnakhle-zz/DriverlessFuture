@@ -13,7 +13,7 @@ class HighwayCar extends Car {
     PVector tempDestination = new PVector(0, 0);
     float randomX;
     float randomY;
-
+    int gridSize = 180;
     randomX = gridSize* round(random(-1, width/gridSize)+1);
     randomY = gridSize* round(random(-1, height/gridSize)+1);
 

@@ -7,77 +7,79 @@ class CityBg {
   // A Road is an arraylist of points (PVector objects)
   ArrayList<PVector> points;
   // A Road has a radius, i.e how far is it ok for the boid to wander off
-  float radius;
+  float roadWidth;
   int grid;
 
   CityBg(float r, int grid_) {
     // Arbitrary radius of 20
-    radius = r;
+    roadWidth = r;
     points = new ArrayList<PVector>();
     grid = grid_;
-    newGrid(grid);
   }
 
-  // Add a point to the Road
-  void addPoint(float x, float y) {
-    PVector point = new PVector(x, y);
-    points.add(point);
-  }
-  // creates a grid of points for the road
-  void newGrid(int spacer) {
-
- 
-    for ( int g = 0; g <width+spacer/spacer; g++) {
-      addPoint(spacer*g, 0);
-      addPoint(spacer*g, height);
-      addPoint(spacer*(g+1), height);
-    }
-    for ( int g = 0; g <height+spacer/spacer; g++) {
-      addPoint(0, spacer*g);
-      addPoint(width, spacer*g);
-      addPoint(width, spacer*(g+1));
-    }
-  }
   // Draw the Road
   void display() {
     // Draw Roads
-    stroke(255, 50);
-    strokeWeight(radius*2+2);
-    noFill();
 
-    for (int v = 0; v < points.size()-1; v++ ) {
-      line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
+    rectMode(CENTER);
+    stroke(50);
+    strokeWeight(2);
+    fill(0);
+    for (int bv = 0; bv < width/grid; bv++ ) {
+      for (int bh = 0; bh < height/grid+1; bh++ ) {
+        rect(grid*bv+grid/2, grid*bh + grid/2, grid-roadWidth*2, grid-roadWidth*2);
+      }
     }
-    stroke(10, 20, 20);
-    strokeWeight(radius*2);
-    noFill();
 
-    for (int v = 0; v < points.size()-1; v++ ) {
-      line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
-    }
-    // draw buildings
-    /* int buildingN = 5;
-     for (int bv = 1; bv < buildingN; bv++ ) {
-     for (int bh = 1; bh < buildingN-1; bh++ ) {
-     
-     float buildingSize = gridSize*0.6;
-     float offset=0;
-     rectMode(CENTER);
-     noStroke();
-     fill(15, 15, 30);
-     rect(gridSize*bv-gridSize/2, gridSize*bh- gridSize/2, buildingSize, buildingSize);
-     fill(15, 20, 50);
-     offset= 15;
-     //  rect(gridSize*bv-gridSize/2+offset, gridSize*bh- gridSize/2+offset, buildingSize, buildingSize);
-     }
-     }
-     */
     /// draw dot grid
     strokeWeight(2);
     stroke(255, 50);
-    for ( int h = 0; h< width/radius; h++) {
-      for ( int v = 0; v< height/radius; v++) {
-        point(radius*h, radius*v);
+    for ( int h = 0; h< width/roadWidth; h++) {
+      for ( int v = 0; v< height/roadWidth; v++) {
+        point(roadWidth*h, roadWidth*v);
+      }
+    }
+
+    // draw buildings
+    displayBuildings();
+  }
+  void displayBuildings() {
+    int buildingN = 6;
+    float buildingSize = grid*0.5;
+    float offsetX=0;
+    float offsetY=0;
+    float buildingHeight = 0.04;
+
+    for (int bv = 0; bv < buildingN; bv++ ) {
+      for (int bh = 0; bh < buildingN-1; bh++ ) {
+        randomSeed(1000);
+        buildingHeight = random(0.01, 0.09);
+        rectMode(CENTER);
+        noStroke();
+        fill(25);
+        offsetX = (grid*bv-width/2)*buildingHeight;
+        offsetY = (grid*bh-height/2)*buildingHeight;
+
+        rect(grid*bv+grid/2, grid*bh+ grid/2, buildingSize, buildingSize);
+        beginShape();
+        vertex(grid*bv+grid/2-buildingSize/2, grid*bh+grid/2-buildingSize/2);
+        vertex(grid*bv+grid/2-buildingSize/2+offsetX, grid*bh+grid/2-buildingSize/2+offsetY);
+
+        vertex(grid*bv+grid/2+buildingSize/2+offsetX, grid*bh+grid/2+buildingSize/2+offsetY);
+        vertex(grid*bv+grid/2+buildingSize/2, grid*bh+grid/2+buildingSize/2);
+        endShape(CLOSE);
+
+        beginShape();
+        vertex(grid*bv+grid/2+buildingSize/2, grid*bh+grid/2-buildingSize/2);
+        vertex(grid*bv+grid/2+buildingSize/2+offsetX, grid*bh+grid/2-buildingSize/2+offsetY);
+
+        vertex(grid*bv+grid/2-buildingSize/2+offsetX, grid*bh+grid/2+buildingSize/2+offsetY);
+        vertex(grid*bv+grid/2-buildingSize/2, grid*bh+grid/2+buildingSize/2);
+        endShape(CLOSE);
+        stroke(60);
+        strokeWeight(1.5);
+        fill(50);
+        rect(grid*bv+grid/2+offsetX, grid*bh+ grid/2+offsetY, buildingSize, buildingSize);
       }
     }
   }

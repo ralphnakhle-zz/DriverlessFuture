@@ -31,7 +31,7 @@ abstract class Car {
   // car Angle
   float carAngle = velocity.heading2D() + PI/2;
   float targetCarAngle = 0;
-  float easing = 0.2;
+  float easing = 0.1;
 
   //car path
   CarPath carPath;
@@ -61,7 +61,7 @@ abstract class Car {
 
   void applyBehaviors(ArrayList<Car> Cars) {
     PVector separateForce = separate(Cars);
-    separateForce.mult(1.6);
+
     followPath();
     applyForce(separateForce);
   }
@@ -81,7 +81,7 @@ abstract class Car {
     if (debug) {
       stroke(255, 60, 0, 80);
 
-      strokeWeight(3);
+      strokeWeight(1);
       for (int v = 0; v < carPath.getSize()-1; v++ ) {
         line(carPath.points.get(v).x, carPath.points.get(v).y, carPath.points.get(v+1).x, carPath.points.get(v+1).y);
       }
@@ -209,45 +209,56 @@ abstract class Car {
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
     // calculate the safe zone
-    safeZone = 60;
-    float safeAngle = 60;
-    PVector sum = new PVector();
+    safeZone = 100;
+    float safeAngle = PI/6;
+    PVector sForce = new PVector(0, 0);
 
 
-    int count = 0;
     // For every boid in the system, check if it's too close
     for (Car other : cars) {
       // get the distance between the two cars
-      float d = PVector.dist(position, other.position);
+      float distance = PVector.dist(position, other.position);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
 
-      if ((d > 0) && (d < safeZone)) {
+      if ((distance > 0) && (distance < safeZone)) {
         // Calculate vector pointing away from neighbor
         PVector diff = PVector.sub(position, other.position);
-        diff.normalize();
-        float mainCarAngle = velocity.heading()+ PI/2;
-        // convert car angle to degree
-        mainCarAngle = map(mainCarAngle, -PI, PI, 0, 360);
 
 
-       // if (diff.heading()+ PI/2 < mainCarAngle+safeAngle && diff.heading()+ PI/2 > mainCarAngle-safeAngle) {
-          diff.div(d);        // Weight by distance
-          sum.add(diff);
-          count++;            // Keep track of how many
-      //  }
+        float mainCarAngle = velocity.heading()+PI;
+        float otherCarAngle = diff.heading();
+
+        // convert car angle 
+        mainCarAngle = map(mainCarAngle, -PI, PI, 0, TWO_PI);
+        otherCarAngle = map(otherCarAngle, -PI, PI, 0, TWO_PI);
+
+        // check if the other car is in front of this car
+        if (otherCarAngle < mainCarAngle+safeAngle &&  otherCarAngle > mainCarAngle-safeAngle) {
+          diff.normalize();
+          // if the car is straight in front..
+          if (otherCarAngle < mainCarAngle+PI/100 &&  otherCarAngle > mainCarAngle-PI/100 && distance<30) {
+            diff.div(2);        // Weight by distance
+          }
+          else {
+            diff.div(distance*0.1);        // Weight by distance
+          }
+          sForce = diff.get();
+
+
+          if (debug) {
+            stroke(255, 80);
+            strokeWeight(1);
+            line(position.x, position.y, other.position.x, other.position.y);
+            fill(100, 30);
+            noStroke();
+            arc(position.x, position.y, safeZone*2, safeZone*2, mainCarAngle-safeAngle, mainCarAngle+safeAngle, PIE);
+          }
+        }
       }
     }
-    // Average -- divide by how many
-    if (count > 0) {
-      sum.div(count);
-      // Our desired vector is the average scaled to maximum speed
-      sum.normalize();
-      sum.mult(speedLimit);
-      // Implement Reynolds: Steering = Desired - Velocity
-      sum.sub(velocity);
-      sum.limit(steerLimit/2);
-    }
-    return sum;
+
+
+    return sForce;
   }
 
 
