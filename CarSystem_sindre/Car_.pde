@@ -31,7 +31,7 @@ abstract class Car {
   // car Angle
   float carAngle = velocity.heading2D() + PI/2;
   float targetCarAngle = 0;
-  float easing = 0.1;
+  float easing = 0.2;
 
   //car path
   CarPath carPath;
@@ -45,6 +45,8 @@ abstract class Car {
     position = getDestination(new PVector(0, 0));
     // get a first destination for the car
     carDestination = getDestination(position);
+
+    safeZone = 100;
   }
 
   // update methode
@@ -209,7 +211,6 @@ abstract class Car {
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
     // calculate the safe zone
-    safeZone = 100;
     float safeAngle = PI/6;
     PVector sForce = new PVector(0, 0);
 

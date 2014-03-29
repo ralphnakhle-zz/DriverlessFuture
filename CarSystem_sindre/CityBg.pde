@@ -1,6 +1,3 @@
-//Based on Path Following
-// by Daniel Shiffman <http://www.shiffman.net>
-// The Nature of Code
 
 class CityBg {
 
@@ -43,6 +40,9 @@ class CityBg {
     // draw buildings
     displayBuildings();
   }
+  
+  
+  
   void displayBuildings() {
     int buildingN = 6;
     float buildingSize = grid*0.5;
@@ -52,8 +52,8 @@ class CityBg {
 
     for (int bv = 0; bv < buildingN; bv++ ) {
       for (int bh = 0; bh < buildingN-1; bh++ ) {
-        randomSeed(1000);
-        buildingHeight = random(0.01, 0.09);
+       // randomSeed(1000);
+        buildingHeight = 0.09;
         rectMode(CENTER);
         noStroke();
         fill(25);

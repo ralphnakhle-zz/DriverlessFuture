@@ -10,6 +10,14 @@ class CarSystem
 
   char carScenario;
 
+
+  // parking variables
+  PVector parkPos;
+  PVector parkStart;
+  int parkingIndex = 0;
+  int parkedCars = 0;
+  int parkingOffset = 40;
+
   // Constructor for the CarSystem class
   CarSystem(char scenario_) {
     //set variable Car population
@@ -129,11 +137,26 @@ class CarSystem
       break;
 
     case 'P': 
-      // println("Scenario : P");  
+      parkStart = new PVector(0-parkingIndex*80, height-50);
+
+      if (parkedCars < 10) { 
+        parkPos = new PVector(width/2+300-parkingOffset, 120+parkedCars*40);
+        parkedCars ++;
+      }
+      else {
+        parkingOffset+=80;
+        parkedCars = 0;
+        parkPos = new PVector(width/2+300-parkingOffset, 120+parkedCars*40);
+        parkedCars ++;
+      }
+
+      Cars.add(new ParkingCar(parkStart, parkPos));
+      parkingIndex ++;
+
       break;
 
     case 'H': 
-      Cars.add(new HighwayCar());
+      Cars.add(new CityCar());
 
       break;
 

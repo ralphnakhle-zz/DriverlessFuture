@@ -6,7 +6,7 @@ class GUI {
 
   int controlMargin = width-width/10+10;
   int carNumber = 40;
-  float speedLimit = 3;
+  float speedLimit = 2.5;
   float steeringLimit = 0.3;
 
   // ----------------------------------------------------------------------
@@ -191,7 +191,7 @@ class GUI {
     }
     // Parking button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 220 && mouseY <= 270) {
-      //  scenario = 'P';
+        scenario = 'P';
     }
 
     // Shared comodity button

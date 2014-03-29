@@ -6,8 +6,9 @@
 
 CarSystem systemOfCars;
 
-// A path object (series of connected points)
 CityBg cityBg ;
+
+ParkingBg parkingBg;
 
 HighwayBg highwayBg;
 
@@ -22,6 +23,8 @@ char scenario;
 //  FUNCTIONS
 // ----------------------------------------------------------------------
 void setup() {
+  frameRate(30);
+
   size(900, 700);
   scenario = 'C';
   //initialize Gui 
@@ -29,6 +32,7 @@ void setup() {
 
   cityBg = new CityBg(20, cityGridSize);
   highwayBg = new HighwayBg(40);
+  parkingBg = new ParkingBg();
 
   // Call a function to generate new Path object
 
@@ -57,6 +61,7 @@ void draw() {
 
   case 'P': 
     // println("Scenario : P");  
+    parkingBg.display();
     break;
 
   case 'H': 
