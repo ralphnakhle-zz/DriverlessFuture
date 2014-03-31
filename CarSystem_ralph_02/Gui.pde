@@ -18,10 +18,10 @@ class GUI {
 
   void display() {
     rectMode(CORNER);
-
+    strokeWeight(1);
     //Side bar display 
     noStroke();
-    fill(100, 100, 100, 200);
+    fill(50, 200);
     rect(width, 0, -width/10, height);
 
     //Header:
@@ -97,9 +97,9 @@ class GUI {
       carNumber = 60;
     }
 
-    if (carNumber < 3) {
-      carNumber = 4;
-    }
+    // if (carNumber < 3) {
+    //   carNumber = 4;
+    // }
 
     if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 491 && mouseY <= 517 && mousePressed) {
 
@@ -178,18 +178,33 @@ class GUI {
       println(steeringLimit);
     }
     text(int(steeringLimit*10), controlMargin+50, 600);
-
   }
-  
-      void mouseClicked() {
-      if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
-        scenario = 'C';
-      }
-      if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
-        scenario = 'H';
-      }
+
+  void mouseEvent() {
+    // City traffic button
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
+      scenario = 'C';
     }
-    
-    
+    // Highway button
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
+      scenario = 'H';
+      carNumber = 100;
+    }
+    // Parking button
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 220 && mouseY <= 270) {
+      //  scenario = 'P';
+    }
+
+    // Shared comodity button
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 300 && mouseY <= 350) {
+      //  scenario = 'S';
+    }
+
+
+    // event triger
+    if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 395 && mouseY <= 445) {
+      systemOfCars.triggerEvent();
+    }
+  }
 }
 

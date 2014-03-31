@@ -5,15 +5,19 @@ class CarSystem
 
   //List Array containing the cars
   ArrayList <Car> Cars;
+  ArrayList <Car> Ambulances;
 
- 
 
-    // Constructor for the CarSystem class
-  CarSystem() {
+  char carScenario;
+
+  // Constructor for the CarSystem class
+  CarSystem(char scenario_) {
     //set variable Car population
     CarPopulation = 40;
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();
+    Ambulances = new ArrayList<Car>();
+    carScenario = scenario_;
   }
 
   //---------------------------------------------------------------
@@ -23,7 +27,7 @@ class CarSystem
   void init() {
     for (int i = 0; i < CarPopulation; i ++) {
       //create new car
-      Cars.add(new CityCar());
+      getCar();
     }
   }
 
@@ -44,6 +48,15 @@ class CarSystem
 
       Cars.get(i).applyBehaviors(Cars);
     }
+
+    if (Ambulances.size() >0) {
+      for (int a = 0; a< Ambulances.size(); a++) {
+        Ambulances.get(a).update();
+        //display the car
+        Ambulances.get(a).display();
+        Ambulances.get(a).applyBehaviors(Ambulances);
+      }
+    }
   }
   //---------------------------------------------------------------
   // Method to setting car population number Gui buttons
@@ -56,7 +69,7 @@ class CarSystem
     if (diference > 0)
     {
       for (int i = CarPopulation; i < incomingCarNumber; i++) {
-        Cars.add(new CityCar());
+        getCar();
       }
       CarPopulation = incomingCarNumber;
       println("ADD in class system carNumer::" + CarPopulation );
@@ -91,6 +104,47 @@ class CarSystem
   {
     for (int i = 0; i < CarPopulation; i ++) {
       Cars.get(i).setCarSteerLimit(SteerLimit);
+    }
+  }
+
+  //---------------------------------------------------------------
+  // method for trigger event 
+  //---------------------------------------------------------------
+  void triggerEvent() {
+    if (carScenario == 'C') {
+      println("Ambulance!");
+      Ambulances.add(new EmergencyVehicle());
+    }
+    if (carScenario == 'H') {
+      println("Accident!");
+      
+    }
+  }
+  //---------------------------------------------------------------
+  // select the car depending on the scenario
+  //---------------------------------------------------------------
+  void getCar() {
+    switch(scenario) {
+    case 'C': 
+      Cars.add(new CityCar());
+      break;
+
+    case 'P': 
+      // println("Scenario : P");  
+      break;
+
+    case 'H': 
+      Cars.add(new HighwayCar());
+
+      break;
+
+    case 'S': 
+      // println("Scenario : S"); 
+      break;
+
+    default:             // Default executes if the case labels
+      // println("Scenario : None");   
+      break;
     }
   }
 }

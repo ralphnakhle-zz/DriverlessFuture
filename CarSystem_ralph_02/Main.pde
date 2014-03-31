@@ -15,10 +15,9 @@ GUI gui ;
 
 // Using this variable to toggle between drawing the lines or not
 boolean debug = false;
-
-//int gridSize = 600;
-int gridSize = 1;
+int cityGridSize = 180;
 char scenario;
+int gridSize = 1;
 
 // ----------------------------------------------------------------------
 //  FUNCTIONS
@@ -29,14 +28,15 @@ void setup() {
   //initialize Gui 
   gui = new GUI();
 
-  cityBg = new CityBg(20,180);
+  cityBg = new CityBg(20, cityGridSize);
   highwayBg = new HighwayBg(40);
-  
-  // Call a function to generate new Path object
-  
 
-  systemOfCars = new CarSystem();
+  // Call a function to generate new Path object
+
+
+  systemOfCars = new CarSystem(scenario);
   systemOfCars.init();
+  frameRate(30);
 }
 
 
@@ -49,43 +49,33 @@ void draw() {
   // draw the background
   background(0, 10, 10);
 
-
-
-
+  // display the right background
   switch(scenario) {
   case 'C': 
-   
     // Display the road
     cityBg.display();
 
-    // Call all functions related to Cars
-    systemOfCars.run();
-
-    println("Scenario : C");  // Does not execute
     break;
 
   case 'P': 
-    println("Scenario : P");  // Does not execute
+    // println("Scenario : P");  
     break;
 
   case 'H': 
     // Display the road
     highwayBg.display();
-    println("Scenario : H");  // Does not execute
     break;
 
   case 'S': 
-    println("Scenario : S");  // Does not execute
     break;
 
-  default:             // Default executes if the case labels
-    println("Scenario : None");   // don't match the switch parameter
+  default:             
     break;
   }
 
 
-
-
+  // run the car system
+  systemOfCars.run();
   //display Gui
   gui.display();
   gui.activateToggle();
@@ -100,6 +90,13 @@ public void keyPressed() {
 }
 
 void mouseClicked() {  
-  gui.mouseClicked();
+  gui.mouseEvent();
+  int controlMargin = width-width/10+10;
+
+  if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 340) {
+
+    systemOfCars = new CarSystem(scenario);
+    systemOfCars.init();
+  }
 }
 

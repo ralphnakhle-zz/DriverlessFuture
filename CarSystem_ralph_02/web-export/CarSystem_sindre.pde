@@ -6,19 +6,15 @@ class CarSystem
   //List Array containing the cars
   ArrayList <Car> Cars;
 
-  // Vector for origine
-  PVector origine;
-  // Vector for destination
-  PVector destination;
+  char carScenario;
 
-  Road systemRoad ;
   // Constructor for the CarSystem class
-  CarSystem(Road tempRoad) {
+  CarSystem(char scenario_) {
     //set variable Car population
     CarPopulation = 40;
-    systemRoad = tempRoad;
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();
+    carScenario = scenario_;
   }
 
   //---------------------------------------------------------------
@@ -28,12 +24,12 @@ class CarSystem
   void init() {
     for (int i = 0; i < CarPopulation; i ++) {
       //create new car
-      Cars.add(new Car());
+      getCar();
     }
   }
 
 
- 
+
   //---------------------------------------------------------------
   // method to display our car system
   //---------------------------------------------------------------
@@ -44,12 +40,84 @@ class CarSystem
       //update position
       Cars.get(i).update();
       //display the car
-     
+
       Cars.get(i).display();
 
       Cars.get(i).applyBehaviors(Cars);
+    }
+  }
+  //---------------------------------------------------------------
+  // Method to setting car population number Gui buttons
+  //---------------------------------------------------------------
 
-    //  Cars.get(i).follow();
+  void setCarPopulation(int incomingCarNumber)
+  {
+    int diference = incomingCarNumber - CarPopulation;
+
+    if (diference > 0)
+    {
+      for (int i = CarPopulation; i < incomingCarNumber; i++) {
+        getCar();
+      }
+      CarPopulation = incomingCarNumber;
+      println("ADD in class system carNumer::" + CarPopulation );
+    }
+    else if (diference < 0) {
+      for (int i = CarPopulation-1; i > incomingCarNumber; i--) {
+        Cars.remove(i);
+      }
+      CarPopulation = incomingCarNumber;
+      println("REMOVE in class system carNumer::" + CarPopulation );
+    }
+  }
+
+
+  //---------------------------------------------------------------
+  // method for setting up speed limit for all cars
+  //---------------------------------------------------------------
+
+  void setCarSpeedLimit(float carSpeedLimit)
+  {
+    for (int i = 0; i < CarPopulation; i ++) {
+      Cars.get(i).setCarSpeedLimit(carSpeedLimit);
+    }
+  }
+
+
+  //---------------------------------------------------------------
+  // method for setting up Steering limit for all cars
+  //---------------------------------------------------------------
+
+  void setCarSteerLimit(float SteerLimit)
+  {
+    for (int i = 0; i < CarPopulation; i ++) {
+      Cars.get(i).setCarSteerLimit(SteerLimit);
+    }
+  }
+
+  // select the car depending on the scenario
+  void getCar() {
+    switch(scenario) {
+    case 'C': 
+      Cars.add(new CityCar());
+      break;
+
+    case 'P': 
+      // println("Scenario : P");  
+      break;
+
+    case 'H': 
+      Cars.add(new HighwayCar());
+
+      break;
+
+    case 'S': 
+      // println("Scenario : S"); 
+      break;
+
+    default:             // Default executes if the case labels
+      // println("Scenario : None");   
+      break;
     }
   }
 }
@@ -104,14 +172,15 @@ class CarPath {
   float radius;
   PVector start;
   PVector end;
+  int offsetDistance;
+  CarPath(PVector start_, PVector end_, int offsetDistance_) {
 
-  CarPath(PVector start_, PVector end_) {
-    // Arbitrary radius of 20
-    radius = 20;
     points = new ArrayList<PVector>();
     start = start_.get();
     end = end_.get();
+    offsetDistance = offsetDistance_;
     generatePath();
+    
   }
   int getSize() {
     int size = points.size();
@@ -119,7 +188,6 @@ class CarPath {
   }
   void generatePath() {
     PVector offset = new PVector(0, 0);
-    int offsetDistance = 10;
     // end without offset
     PVector realEnd = end.get();
 
@@ -150,7 +218,7 @@ class CarPath {
 }
 
 
-class Car {
+abstract class Car {
 
   // Car position
   PVector position;
@@ -175,8 +243,6 @@ class Car {
   // car color
   color carColor = color(100);
 
-  // check if the car had an accident
-  boolean accidented = false;
 
   // car target and origine
   PVector carDestination;
@@ -189,6 +255,7 @@ class Car {
   //car path
   CarPath carPath;
   int pathIndex = 1;
+
 
 
   // constructor
@@ -213,8 +280,8 @@ class Car {
 
   void applyBehaviors(ArrayList<Car> Cars) {
     PVector separateForce = separate(Cars);
-    separateForce.mult(1.5);
-followPath();
+    separateForce.mult(1.6);
+    followPath();
     applyForce(separateForce);
   }
 
@@ -243,7 +310,7 @@ followPath();
     fill(carColor);
     noStroke();
 
-    carAngle = velocity.heading2D() + PI/2;
+    carAngle = velocity.heading() + PI/2;
 
     float dir = (carAngle - targetCarAngle) / TWO_PI;
     dir -= round( dir );
@@ -279,7 +346,7 @@ followPath();
   // A method that calculates a steering force towards a target and following a path
 
   void followPath() {
-
+    // PVector for the desired position
     PVector desired;
     // A vector pointing from the position to the first point of the path
     desired = PVector.sub(carPath.points.get(pathIndex), position); 
@@ -360,22 +427,33 @@ followPath();
   // Separation
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
-    // calculate the safe zone according to speed
-    safeZone = 25;
-
+    // calculate the safe zone
+    safeZone = 60;
+    float safeAngle = 60;
     PVector sum = new PVector();
+
+
     int count = 0;
     // For every boid in the system, check if it's too close
     for (Car other : cars) {
+      // get the distance between the two cars
       float d = PVector.dist(position, other.position);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
+
       if ((d > 0) && (d < safeZone)) {
         // Calculate vector pointing away from neighbor
         PVector diff = PVector.sub(position, other.position);
         diff.normalize();
-        diff.div(d);        // Weight by distance
-        sum.add(diff);
-        count++;            // Keep track of how many
+        float mainCarAngle = velocity.heading()+ PI/2;
+        // convert car angle to degree
+        mainCarAngle = map(mainCarAngle, -PI, PI, 0, 360);
+
+
+       // if (diff.heading()+ PI/2 < mainCarAngle+safeAngle && diff.heading()+ PI/2 > mainCarAngle-safeAngle) {
+          diff.div(d);        // Weight by distance
+          sum.add(diff);
+          count++;            // Keep track of how many
+      //  }
       }
     }
     // Average -- divide by how many
@@ -386,10 +464,8 @@ followPath();
       sum.mult(speedLimit);
       // Implement Reynolds: Steering = Desired - Velocity
       sum.sub(velocity);
-      sum.limit(steerLimit);
+      sum.limit(steerLimit/2);
     }
-
-
     return sum;
   }
 
@@ -398,19 +474,135 @@ followPath();
   // method to create random origine and destinations for the cars
   //---------------------------------------------------------------
 
-  PVector getDestination( PVector lastDestination) {
+  abstract PVector getDestination( PVector lastDestination); 
 
+  //----------------------------------------------------------------------
+  // method to set car speed limit - so it can be accessed from the Car System then the Gui - 
+  //----------------------------------------------------------------------
+
+  void setCarSpeedLimit(float incomingCarSpeedLimit)
+  {
+    speedLimit = incomingCarSpeedLimit;
+  }
+
+  //----------------------------------------------------------------------
+  // method to set car steering limit - so it can be accessed from the Car System then the Gui
+  //----------------------------------------------------------------------
+
+  void setCarSteerLimit(float incomingCarSteerLimit)
+  {
+    steerLimit = incomingCarSteerLimit;
+  }
+}
+
+//Based on Path Following
+// by Daniel Shiffman <http://www.shiffman.net>
+// The Nature of Code
+
+class CityBg {
+
+  // A Road is an arraylist of points (PVector objects)
+  ArrayList<PVector> points;
+  // A Road has a radius, i.e how far is it ok for the boid to wander off
+  float radius;
+  int grid;
+
+  CityBg(float r, int grid_) {
+    // Arbitrary radius of 20
+    radius = r;
+    points = new ArrayList<PVector>();
+    grid = grid_;
+    newGrid(grid);
+  }
+
+  // Add a point to the Road
+  void addPoint(float x, float y) {
+    PVector point = new PVector(x, y);
+    points.add(point);
+  }
+  // creates a grid of points for the road
+  void newGrid(int spacer) {
+
+ 
+    for ( int g = 0; g <width+spacer/spacer; g++) {
+      addPoint(spacer*g, 0);
+      addPoint(spacer*g, height);
+      addPoint(spacer*(g+1), height);
+    }
+    for ( int g = 0; g <height+spacer/spacer; g++) {
+      addPoint(0, spacer*g);
+      addPoint(width, spacer*g);
+      addPoint(width, spacer*(g+1));
+    }
+  }
+  // Draw the Road
+  void display() {
+    // Draw Roads
+    stroke(255, 50);
+    strokeWeight(radius*2+2);
+    noFill();
+
+    for (int v = 0; v < points.size()-1; v++ ) {
+      line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
+    }
+    stroke(10, 20, 20);
+    strokeWeight(radius*2);
+    noFill();
+
+    for (int v = 0; v < points.size()-1; v++ ) {
+      line(points.get(v).x, points.get(v).y, points.get(v+1).x, points.get(v+1).y);
+    }
+    // draw buildings
+    /* int buildingN = 5;
+     for (int bv = 1; bv < buildingN; bv++ ) {
+     for (int bh = 1; bh < buildingN-1; bh++ ) {
+     
+     float buildingSize = gridSize*0.6;
+     float offset=0;
+     rectMode(CENTER);
+     noStroke();
+     fill(15, 15, 30);
+     rect(gridSize*bv-gridSize/2, gridSize*bh- gridSize/2, buildingSize, buildingSize);
+     fill(15, 20, 50);
+     offset= 15;
+     //  rect(gridSize*bv-gridSize/2+offset, gridSize*bh- gridSize/2+offset, buildingSize, buildingSize);
+     }
+     }
+     */
+    /// draw dot grid
+    strokeWeight(2);
+    stroke(255, 50);
+    for ( int h = 0; h< width/radius; h++) {
+      for ( int v = 0; v< height/radius; v++) {
+        point(radius*h, radius*v);
+      }
+    }
+  }
+}
+
+// a subclass of car for city cars
+class CityCar extends Car {
+
+  CityCar() {
+    super();
+  }
+
+  //---------------------------------------------------------------
+  // method to create random origine and destinations for the cars
+  //---------------------------------------------------------------
+
+  PVector getDestination( PVector lastDestination) {
     PVector tempDestination = new PVector(0, 0);
     float randomX;
     float randomY;
 
-    randomX = gridSize* round(random(width/gridSize));
-    randomY = gridSize* round(random(height/gridSize));
+    randomX = cityGridSize* round(random(-1, width/cityGridSize)+1);
+    randomY = cityGridSize* round(random(-1, height/cityGridSize)+1);
 
     tempDestination = new PVector(randomX, randomY);
 
     // create a path to follow
-    carPath = new CarPath(lastDestination, tempDestination);
+    carPath = new CarPath(lastDestination, tempDestination, 10);
 
     return tempDestination;
   }
@@ -419,7 +611,7 @@ followPath();
 // ----------------------------------------------------------------------
 //  GUI class
 // ----------------------------------------------------------------------
-/*
+
 class GUI {
 
   int controlMargin = width-width/10+10;
@@ -432,15 +624,10 @@ class GUI {
   // ----------------------------------------------------------------------
   // 
   GUI() {
-///<<<<<<< HEAD
-             
-                  
-//=======
-//>>>>>>> FETCH_HEAD
   }
 
   void display() {
-
+    rectMode(CORNER);
 
     //Side bar display 
     noStroke();
@@ -528,14 +715,14 @@ class GUI {
 
       carNumber --;
 
-    //  systemOfCars.setCarPopulation(carNumber);
+      systemOfCars.setCarPopulation(carNumber);
       println(carNumber);
     }
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 491 && mouseY <= 521 && mousePressed) {
       carNumber++;
 
-     // systemOfCars.setCarPopulation(carNumber);
+      systemOfCars.setCarPopulation(carNumber);
       println(carNumber);
     }
 
@@ -547,7 +734,7 @@ class GUI {
     // Car Speed Toggle Setup
     //--------------------------------------------------
 
-      if (speedLimit >= 10) {
+    if (speedLimit >= 10) {
       speedLimit = 10;
     }
 
@@ -555,29 +742,29 @@ class GUI {
       speedLimit = 2;
     }
 
-      if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 551 && mouseY <= 577 && mousePressed) {
+    if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 551 && mouseY <= 577 && mousePressed) {
 
-        speedLimit -= 0.5;
+      speedLimit -= 0.5;
 
-     //   systemOfCars.setCarSpeedLimit(speedLimit);
-        println(speedLimit);
-      }
+      systemOfCars.setCarSpeedLimit(speedLimit);
+      println(speedLimit);
+    }
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 551 && mouseY <= 581 && mousePressed) {
-      
+
       speedLimit += 0.5;
 
       systemOfCars.setCarSpeedLimit(speedLimit);
       println(speedLimit);
     }
     text(int(speedLimit)*9 + "/mph", controlMargin+40, 540);
-  
-  
-  //--------------------------------------------------
+
+
+    //--------------------------------------------------
     // Car Speed Toggle Setup
     //--------------------------------------------------
 
-      if (steeringLimit >= 2) {
+    if (steeringLimit >= 2) {
       steeringLimit = 2;
     }
 
@@ -585,116 +772,53 @@ class GUI {
       steeringLimit = 0.1;
     }
 
-      if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 611 && mouseY <= 637 && mousePressed) {
+    if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 611 && mouseY <= 637 && mousePressed) {
 
-        steeringLimit -= 0.1;
+      steeringLimit -= 0.1;
 
-        systemOfCars.setCarSteerLimit(steeringLimit);
-        println(steeringLimit);
-      }
+      systemOfCars.setCarSteerLimit(steeringLimit);
+      println(steeringLimit);
+    }
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 611 && mouseY <= 641 && mousePressed) {
-      
+
       steeringLimit += 0.1;
 
       systemOfCars.setCarSteerLimit(steeringLimit);
       println(steeringLimit);
     }
     text(int(steeringLimit*10), controlMargin+50, 600);
+
   }
   
-  
-}
-*/
-
-
-// ----------------------------------------------------------------------
-// GLOBAL VARIABLES
-// ----------------------------------------------------------------------
-
-CarSystem systemOfCars;
-
-// A path object (series of connected points)
-Road road ;
-
-// Using this variable to toggle between drawing the lines or not
-boolean debug = false;
-
-int gridSize = 170;
-
-// ----------------------------------------------------------------------
-//  FUNCTIONS
-// ----------------------------------------------------------------------
-void setup() {
-  size(900, 700);
-
-
-  // Call a function to generate new Path object
-  newPath(gridSize);
-  systemOfCars = new CarSystem(road);
-  systemOfCars.init();
-}
-
-// ----------------------------------------------------------------------
-//  GUI FUNCTIONS 
-// ----------------------------------------------------------------------
-
-// ----------------------------------------------------------------------
-//  DRAW FUNCTION
-// ----------------------------------------------------------------------
-
-void draw() {
-
-  // draw the background
-  background(0,10,10);
-  // Display the road
-  road.display();
-
-  // Call all functions related to Cars
-  systemOfCars.run();
-
-
-}
-// creates a grid of point for the path class
-void newPath(int spacer) {
-
-  road = new Road();
- // path.addPoint(0, 0);
- // path.addPoint(height, height);
-  for ( int g = 0; g <width+spacer/spacer; g++) {
-    road.addPoint(spacer*g, 0);
-    road.addPoint(spacer*g, height);
-    road.addPoint(spacer*(g+1), height);
-  }
-  for ( int g = 0; g <height+spacer/spacer; g++) {
-    road.addPoint(0, spacer*g);
-    road.addPoint(width, spacer*g);
-    road.addPoint(width, spacer*(g+1));
-  }
-}
-
-// press space bar to able and disable collision and target lines.
-public void keyPressed() {
-  if (key == ' ') {
-    debug = !debug;
-  }
+      void mouseClicked() {
+      if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
+        scenario = 'C';
+      }
+      if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
+        scenario = 'H';
+      }
+    }
+    
+    
 }
 
 //Based on Path Following
 // by Daniel Shiffman <http://www.shiffman.net>
 // The Nature of Code
 
-class Road {
+class HighwayBg {
 
   // A Road is an arraylist of points (PVector objects)
   ArrayList<PVector> points;
   // A Road has a radius, i.e how far is it ok for the boid to wander off
   float radius;
 
-  Road() {
+  HighwayBg(float r) {
     // Arbitrary radius of 20
-    radius = 20;
+    radius = r;
     points = new ArrayList<PVector>();
+    newGrid(0);
   }
 
   // Add a point to the Road
@@ -702,7 +826,13 @@ class Road {
     PVector point = new PVector(x, y);
     points.add(point);
   }
+  // creates a grid of points for the road
+  void newGrid(int spacer) {
 
+ addPoint(0,height/2);
+ addPoint(width,height/2);
+   
+  }
   // Draw the Road
   void display() {
     // Draw Roads
@@ -745,6 +875,138 @@ class Road {
         point(radius*h, radius*v);
       }
     }
+  }
+}
+
+// a subclass of car for city cars
+class HighwayCar extends Car {
+
+  HighwayCar() {
+    super();
+  }
+
+  //---------------------------------------------------------------
+  // method to create random origine and destinations for the cars
+  //---------------------------------------------------------------
+
+  PVector getDestination( PVector lastDestination) {
+    println("H car");
+    PVector tempDestination = new PVector(0, 0);
+    float randomX;
+    float randomY;
+
+    randomX = gridSize* round(random(-1, width/gridSize)+1);
+    randomY = gridSize* round(random(-1, height/gridSize)+1);
+
+    tempDestination = new PVector(randomX, randomY);
+
+    // create a path to follow
+    carPath = new CarPath(lastDestination, tempDestination, 10);
+
+    return tempDestination;
+  }
+}
+
+
+
+// ----------------------------------------------------------------------
+// GLOBAL VARIABLES
+// ----------------------------------------------------------------------
+
+CarSystem systemOfCars;
+
+// A path object (series of connected points)
+CityBg cityBg ;
+
+HighwayBg highwayBg;
+
+GUI gui ;
+
+// Using this variable to toggle between drawing the lines or not
+boolean debug = false;
+int gridSize = 1;
+int cityGridSize = 180;
+char scenario;
+
+// ----------------------------------------------------------------------
+//  FUNCTIONS
+// ----------------------------------------------------------------------
+void setup() {
+  size(900, 700);
+  scenario = 'C';
+  //initialize Gui 
+  gui = new GUI();
+
+  cityBg = new CityBg(20, cityGridSize);
+  highwayBg = new HighwayBg(40);
+
+  // Call a function to generate new Path object
+
+
+  systemOfCars = new CarSystem(scenario);
+  systemOfCars.init();
+}
+
+
+// ----------------------------------------------------------------------
+//  DRAW FUNCTION
+// ----------------------------------------------------------------------
+
+void draw() {
+
+  // draw the background
+  background(0, 10, 10);
+
+  // display the right background
+  switch(scenario) {
+  case 'C': 
+    // Display the road
+    cityBg.display();
+
+    break;
+
+  case 'P': 
+    // println("Scenario : P");  
+    break;
+
+  case 'H': 
+    // Display the road
+    highwayBg.display();
+    break;
+
+  case 'S': 
+    // println("Scenario : S"); 
+    break;
+
+  default:             
+    break;
+  }
+
+
+  // run the car system
+  systemOfCars.run();
+
+  //display Gui
+  gui.display();
+  gui.activateToggle();
+}
+
+
+// press space bar to able and disable collision and target lines.
+public void keyPressed() {
+  if (key == ' ') {
+    debug = !debug;
+  }
+}
+
+void mouseClicked() {  
+  gui.mouseClicked();
+  int controlMargin = width-width/10+10;
+
+  if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 340) {
+
+    systemOfCars = new CarSystem(scenario);
+    systemOfCars.init();
   }
 }
 

@@ -1,7 +1,7 @@
 // a subclass of car for city cars
-class HighwayCar extends Car {
+class CityCar extends Car {
 
-  HighwayCar() {
+  CityCar() {
     super();
   }
 
@@ -14,8 +14,8 @@ class HighwayCar extends Car {
     float randomX;
     float randomY;
 
-    randomX = gridSize* round(random(-1, width/gridSize)+1);
-    randomY = gridSize* round(random(-1, height/gridSize)+1);
+    randomX = cityGridSize* round(random(-1, width/cityGridSize)+1);
+    randomY = cityGridSize* round(random(-1, height/cityGridSize)+1);
 
     tempDestination = new PVector(randomX, randomY);
 
