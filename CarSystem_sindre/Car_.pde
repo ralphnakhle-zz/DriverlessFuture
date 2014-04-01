@@ -92,7 +92,6 @@ abstract class Car {
 
     fill(carColor);
     noStroke();
-
     carAngle = velocity.heading() + PI/2;
 
     float dir = (carAngle - targetCarAngle) / TWO_PI;

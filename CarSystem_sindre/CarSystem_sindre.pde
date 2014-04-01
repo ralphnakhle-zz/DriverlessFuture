@@ -123,6 +123,12 @@ class CarSystem
       println("Ambulance!");
       Ambulances.add(new EmergencyVehicle());
     }
+
+    if (carScenario == 'P') {
+      int randomCar = round(random(0, CarPopulation-1));
+      Cars.get(randomCar).getDestination(Cars.get(randomCar).position);
+    }
+
     if (carScenario == 'H') {
       println("Accident!");
     }
@@ -140,19 +146,24 @@ class CarSystem
       parkStart = new PVector(0-parkingIndex*80, height-50);
 
       if (parkedCars < 10) { 
-        parkPos = new PVector(width/2+300-parkingOffset, 120+parkedCars*40);
+        parkPos = new PVector(width/2+300-parkingOffset, 120+parkedCars*50);
         parkedCars ++;
       }
       else {
-        parkingOffset+=80;
+        parkingOffset+=100;
         parkedCars = 0;
-        parkPos = new PVector(width/2+300-parkingOffset, 120+parkedCars*40);
+        parkPos = new PVector(width/2+300-parkingOffset, 120+parkedCars*50);
         parkedCars ++;
       }
 
       Cars.add(new ParkingCar(parkStart, parkPos));
-      parkingIndex ++;
 
+      if (parkingIndex <= CarPopulation) {
+        parkingIndex ++;
+      }
+      else {
+        parkingIndex = 0;
+      }
       break;
 
     case 'H': 

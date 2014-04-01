@@ -17,6 +17,8 @@ GUI gui ;
 // Using this variable to toggle between drawing the lines or not
 boolean debug = false;
 int cityGridSize = 180;
+
+
 char scenario;
 
 // ----------------------------------------------------------------------

@@ -7,12 +7,14 @@ class ParkingCar extends Car {
   boolean parked = false;
   PVector parkingPosition;
 
+  PVector entrance;
+
   ParkingCar(PVector start, PVector parkingPosition_) {
     carRadius = 18;
-    parkingPosition = parkingPosition_;
+    parkingPosition = parkingPosition_.get();
     // give starting position for the car
-    position = start;
-
+    position = start.get();
+    entrance = start.get();
     safeZone = 100;
 
     carPath = new CarPath(position, parkingPosition, 0);
@@ -31,6 +33,15 @@ class ParkingCar extends Car {
     }
   }
 
+  void applyBehaviors(ArrayList<Car> Cars) {
+    PVector separateForce = separate(Cars);
+    separateForce.mult(2);
+    if (!parked) {
+      followPath();
+    }
+    applyForce(separateForce);
+  }
+
 
   void followPath() {
     // PVector for the desired position
@@ -45,8 +56,18 @@ class ParkingCar extends Car {
     }
     // if the car is close to the final target of the path
     if (desired.mag()<10 && pathIndex == 2) { 
-      parked = true;
-      velocity.mult(0);
+
+      // if the car is in the exit lane
+      if (position.y<80) {
+            carPath = new CarPath(position, new PVector(0,50), 0);
+
+        
+      }
+
+      else {
+        parked = true;
+        velocity.mult(0);
+      }
     }
 
     // Predict location 20 (arbitrary choice) frames ahead
@@ -76,7 +97,17 @@ class ParkingCar extends Car {
 
 
   PVector getDestination( PVector lastDestination) {
-    return null;
+    parked = false;
+    PVector tempDestination = new PVector(0, 0);
+
+
+    tempDestination = new PVector(lastDestination.x-50, 50);
+
+    // create a path to follow
+    carPath = new CarPath(lastDestination, tempDestination, 0);
+
+    return tempDestination;
+    //  return null;
   }
 }
 
