@@ -18,6 +18,8 @@ class CarSystem
   int parkedCars = 0;
   int parkingOffset = 40;
 
+  ArrayList <ParkingSpot> parkingSpots;
+
   // Constructor for the CarSystem class
   CarSystem(char scenario_) {
     //set variable Car population
@@ -25,6 +27,7 @@ class CarSystem
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();
     Ambulances = new ArrayList<Car>();
+    parkingSpots = new ArrayList<ParkingSpot>();
     carScenario = scenario_;
   }
 
@@ -33,6 +36,15 @@ class CarSystem
   //---------------------------------------------------------------
 
   void init() {
+    PVector parkingPosition;
+    for (int p = 0; p < 10; p ++) {
+      for (int pR = 0; pR < 10; pR ++) {
+
+        parkingPosition = new PVector(width /2+300 - 60*p, 120+ pR*50);
+        parkingSpots.add(new ParkingSpot(parkingPosition, false));
+      }
+    }
+
     for (int i = 0; i < CarPopulation; i ++) {
       //create new car
       getCar();
@@ -70,23 +82,16 @@ class CarSystem
   // Method to setting car population number Gui buttons
   //---------------------------------------------------------------
 
-  void setCarPopulation(int incomingCarNumber)
-  {
-    int diference = incomingCarNumber - CarPopulation;
+  void setCarPopulation(int incomingCarNumber) {
 
-    if (diference > 0)
-    {
-      for (int i = CarPopulation; i < incomingCarNumber; i++) {
-        getCar();
-      }
-      CarPopulation = incomingCarNumber;
+    if (incomingCarNumber ==1) {
+      getCar();
+      CarPopulation = Cars.size() ;
       println("ADD in class system carNumer::" + CarPopulation );
     }
-    else if (diference < 0) {
-      for (int i = CarPopulation-1; i > incomingCarNumber; i--) {
-        Cars.remove(i);
-      }
-      CarPopulation = incomingCarNumber;
+    else if (incomingCarNumber == 0) {
+      Cars.remove(CarPopulation-1);
+      CarPopulation = Cars.size() ;
       println("REMOVE in class system carNumer::" + CarPopulation );
     }
   }
@@ -125,8 +130,12 @@ class CarSystem
     }
 
     if (carScenario == 'P') {
+
       int randomCar = round(random(0, CarPopulation-1));
-      Cars.get(randomCar).getDestination(Cars.get(randomCar).position);
+      if (Cars.get(randomCar).parked == true) {
+        Cars.get(randomCar).getDestination(Cars.get(randomCar).position);
+        parkingSpots.get(randomCar).useParking(true);
+      }
     }
 
     if (carScenario == 'H') {
@@ -143,27 +152,20 @@ class CarSystem
       break;
 
     case 'P': 
+      // define where the cars come in 
       parkStart = new PVector(0-parkingIndex*80, height-50);
 
-      if (parkedCars < 10) { 
-        parkPos = new PVector(width/2+300-parkingOffset, 120+parkedCars*50);
-        parkedCars ++;
-      }
-      else {
-        parkingOffset+=100;
-        parkedCars = 0;
-        parkPos = new PVector(width/2+300-parkingOffset, 120+parkedCars*50);
-        parkedCars ++;
+      if (parkingSpots.get(parkingIndex).getParkingState() == false) {
+        parkPos = parkingSpots.get(parkingIndex).getParkingPosition();
       }
 
       Cars.add(new ParkingCar(parkStart, parkPos));
+      parkingSpots.get(parkingIndex).useParking(true);
 
-      if (parkingIndex <= CarPopulation) {
+      if (parkingIndex < CarPopulation) {
         parkingIndex ++;
       }
-      else {
-        parkingIndex = 0;
-      }
+
       break;
 
     case 'H': 

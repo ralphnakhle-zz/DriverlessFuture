@@ -38,6 +38,9 @@ abstract class Car {
   int pathIndex = 1;
 
 
+  boolean parked = false;
+
+
 
   // constructor
   Car() {
@@ -92,8 +95,13 @@ abstract class Car {
 
     fill(carColor);
     noStroke();
-    carAngle = velocity.heading() + PI/2;
 
+    if (velocity.mag()<=0) {
+      carAngle = 0;
+    }
+    else {
+      carAngle = velocity.heading() + PI/2;
+    }
     float dir = (carAngle - targetCarAngle) / TWO_PI;
     dir -= round( dir );
     dir *= TWO_PI;

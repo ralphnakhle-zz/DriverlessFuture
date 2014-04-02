@@ -4,18 +4,17 @@ class ParkingCar extends Car {
   float parkingGrid = 40;
   float parkingWidth = width - 300;
   float parkingHeight = height - 200;
-  boolean parked = false;
   PVector parkingPosition;
 
-  PVector entrance;
 
   ParkingCar(PVector start, PVector parkingPosition_) {
     carRadius = 18;
     parkingPosition = parkingPosition_.get();
     // give starting position for the car
     position = start.get();
-    entrance = start.get();
     safeZone = 100;
+    easing = 0.1;
+    parked = false;
 
     carPath = new CarPath(position, parkingPosition, 0);
   }
@@ -55,16 +54,15 @@ class ParkingCar extends Car {
       desired = PVector.sub(carPath.points.get(pathIndex), position);
     }
     // if the car is close to the final target of the path
-    if (desired.mag()<10 && pathIndex == 2) { 
+    if (desired.mag()<2 && pathIndex == 2) { 
 
       // if the car is in the exit lane
       if (position.y<80) {
-            carPath = new CarPath(position, new PVector(0,50), 0);
-
-        
+        carPath = new CarPath(position, new PVector(0, 50), 0);
       }
-
+      // else the car has arrived to his parking spot
       else {
+        // parked and stop
         parked = true;
         velocity.mult(0);
       }
@@ -101,7 +99,7 @@ class ParkingCar extends Car {
     PVector tempDestination = new PVector(0, 0);
 
 
-    tempDestination = new PVector(lastDestination.x-50, 50);
+    tempDestination = new PVector(lastDestination.x-30, 50);
 
     // create a path to follow
     carPath = new CarPath(lastDestination, tempDestination, 0);

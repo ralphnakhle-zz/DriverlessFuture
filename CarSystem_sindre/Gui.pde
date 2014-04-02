@@ -93,27 +93,19 @@ class GUI {
     // Car Population Toggle Setup
     //--------------------------------------------------
 
-    if (carNumber >= 60) {
-      carNumber = 60;
-    }
-
-    // if (carNumber < 3) {
-    //   carNumber = 4;
-    // }
 
     if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 491 && mouseY <= 517 && mousePressed) {
-
-      carNumber --;
-
-      systemOfCars.setCarPopulation(carNumber);
-      println(carNumber);
+      if (carNumber>=4) {
+        carNumber --;
+        systemOfCars.setCarPopulation(0);
+      }
     }
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 491 && mouseY <= 521 && mousePressed) {
-      carNumber++;
-
-      systemOfCars.setCarPopulation(carNumber);
-      println(carNumber);
+      if (carNumber < 100) {
+        carNumber++;
+        systemOfCars.setCarPopulation(1);
+      }
     }
 
     fill(255);
@@ -128,13 +120,13 @@ class GUI {
       speedLimit = 10;
     }
 
-    if (speedLimit < 2) {
-      speedLimit = 2;
+    if (speedLimit < 1) {
+      speedLimit = 1;
     }
 
     if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 551 && mouseY <= 577 && mousePressed) {
 
-      speedLimit -= 0.5;
+      speedLimit -= 0.2;
 
       systemOfCars.setCarSpeedLimit(speedLimit);
       println(speedLimit);
@@ -142,7 +134,7 @@ class GUI {
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 551 && mouseY <= 581 && mousePressed) {
 
-      speedLimit += 0.5;
+      speedLimit += 0.2;
 
       systemOfCars.setCarSpeedLimit(speedLimit);
       println(speedLimit);
@@ -184,19 +176,23 @@ class GUI {
     // city traffic button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
       scenario = 'C';
+      carNumber = 40;
     }
     // highway button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
       scenario = 'H';
+      carNumber = 40;
     }
     // Parking button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 220 && mouseY <= 270) {
-        scenario = 'P';
+      scenario = 'P';
+      carNumber = 40;
     }
 
     // Shared comodity button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 300 && mouseY <= 350) {
       //  scenario = 'S';
+      carNumber = 40;
     }
 
 

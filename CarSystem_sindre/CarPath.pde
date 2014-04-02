@@ -1,7 +1,4 @@
-//Based on Path Following
-// by Daniel Shiffman <http://www.shiffman.net>
-// The Nature of Code
-
+// creates a path for the car to follow from a start and end position
 class CarPath {
 
   // A Road is an arraylist of points (PVector objects)
