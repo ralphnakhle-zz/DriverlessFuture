@@ -67,6 +67,8 @@ void draw() {
     break;
 
   case 'S': 
+  background(25, 10, 10);
+    cityBg.display();
     break;
 
   default:             

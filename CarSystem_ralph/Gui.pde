@@ -188,7 +188,7 @@ class GUI {
     // Highway button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
       scenario = 'H';
-      carNumber = 100;
+      //carNumber = 100;
     }
     // Parking button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 220 && mouseY <= 270) {
@@ -197,7 +197,7 @@ class GUI {
 
     // Shared comodity button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 300 && mouseY <= 350) {
-      //  scenario = 'S';
+        scenario = 'S';
     }
 
 

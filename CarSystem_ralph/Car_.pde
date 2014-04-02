@@ -38,7 +38,6 @@ abstract class Car {
   int pathIndex = 1;
 
 
-
   // constructor
   Car() {
     // give starting position for the car
@@ -62,6 +61,16 @@ abstract class Car {
   void applyBehaviors(ArrayList<Car> Cars) {
     PVector separateForce = separate(Cars);
 
+    followPath();
+    applyForce(separateForce);
+  }
+
+
+
+  
+  void applyPedestrianBehaviors(Pedestrian pedestrian) {
+    PVector separateForce = separateFromPedestrian(pedestrian);
+    
     followPath();
     applyForce(separateForce);
   }
@@ -262,28 +271,83 @@ abstract class Car {
   }
 
 
-  //---------------------------------------------------------------
-  // method to create random origine and destinations for the cars
-  //---------------------------------------------------------------
 
-  abstract PVector getDestination( PVector lastDestination); 
-
-  //----------------------------------------------------------------------
-  // method to set car speed limit - so it can be accessed from the Car System then the Gui - 
-  //----------------------------------------------------------------------
-
-  void setCarSpeedLimit(float incomingCarSpeedLimit)
-  {
-    speedLimit = incomingCarSpeedLimit;
+  boolean findTargetCarfromPedestrian(Pedestrian p){
+    safeZone = 10;
+    float safeAngle = PI/6;
+    PVector sForce = new PVector(0, 0);
+    float distance = PVector.dist(position, p.location);
+    
+    if (distance < safeZone){
+     
+      p.setPickedUp(true,velocity);
+       velocity.mult(0);
+     return true; 
+    }
+    return false;
   }
 
-  //----------------------------------------------------------------------
-  // method to set car steering limit - so it can be accessed from the Car System then the Gui
-  //----------------------------------------------------------------------
+  // ----------------------------------------------------------------------
+  //  Interaction with Pedestrian
+  // ----------------------------------------------------------------------
+  // Separation
+  // Method checks for nearby vehicles and steers away
+  PVector separateFromPedestrian (Pedestrian pedestrian) {
+    PVector sForce = new PVector(0, 0);
+      PVector diff = PVector.sub(position, pedestrian.location);
+      
+      // stop the car - PVector veclocity = 0;
+     // velocity.mult(0);
+      //diff.normalize();
+      
+      //when pedestrain reaches car
+      if (pedestrian.location == position){
+       
+       //acceleration.add(1);
+      // velocity.limit(speedLimit);
+        
+      }
 
-  void setCarSteerLimit(float incomingCarSteerLimit)
-  {
-    steerLimit = incomingCarSteerLimit;
-  }
+      // check if the other car is in front of this car
+      //diff.normalize();
+      // if the car is straight in front..
+
+      //sForce = diff.get();
+      return sForce;
+    }
+
+  
+
+
+
+//---------------------------------------------------------------
+// method to create random origine and destinations for the accident
+//---------------------------------------------------------------
+
+void applyAccidentBehaviors(PVector Accident){} 
+
+
+//---------------------------------------------------------------
+// method to create random origine and destinations for the cars
+//---------------------------------------------------------------
+
+abstract PVector getDestination( PVector lastDestination); 
+
+//----------------------------------------------------------------------
+// method to set car speed limit - so it can be accessed from the Car System then the Gui - 
+//----------------------------------------------------------------------
+
+void setCarSpeedLimit(float incomingCarSpeedLimit)
+{
+  speedLimit = incomingCarSpeedLimit;
 }
 
+//----------------------------------------------------------------------
+// method to set car steering limit - so it can be accessed from the Car System then the Gui
+//----------------------------------------------------------------------
+
+void setCarSteerLimit(float incomingCarSteerLimit)
+{
+  steerLimit = incomingCarSteerLimit;
+}
+}

@@ -3,6 +3,10 @@ class EmergencyVehicle extends Car {
   EmergencyVehicle() {
     super();
   }
+  
+  void applyAccidentBehaviors(PVector Accident) {
+   
+  }
 
   // ----------------------------------------------------------------------
   //  Car display

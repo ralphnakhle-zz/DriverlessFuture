@@ -5,6 +5,10 @@ class CityCar extends Car {
     super();
   }
 
+void applyAccidentBehaviors(PVector Accident) {
+   
+  }
+
   //---------------------------------------------------------------
   // method to create random origine and destinations for the cars
   //---------------------------------------------------------------
