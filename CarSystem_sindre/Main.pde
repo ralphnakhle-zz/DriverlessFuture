@@ -16,7 +16,6 @@ GUI gui ;
 
 // Using this variable to toggle between drawing the lines or not
 boolean debug = false;
-int cityGridSize = 180;
 
 
 char scenario;
@@ -27,12 +26,12 @@ char scenario;
 void setup() {
   frameRate(30);
 
-  size(900, 700);
+  size(1200, 700);
   scenario = 'C';
   //initialize Gui 
   gui = new GUI();
 
-  cityBg = new CityBg(20, cityGridSize);
+  cityBg = new CityBg();
   highwayBg = new HighwayBg(40);
   parkingBg = new ParkingBg();
 
@@ -83,7 +82,6 @@ void draw() {
   systemOfCars.run();
   //display Gui
   gui.display();
-  gui.activateToggle();
 }
 
 
@@ -94,7 +92,8 @@ public void keyPressed() {
   }
 }
 
-void mouseClicked() {  
+void mousePressed() {  
+  gui.activateToggle();
   gui.mouseEvent();
   int controlMargin = width-width/10+10;
 

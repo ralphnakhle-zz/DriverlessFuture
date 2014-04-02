@@ -15,7 +15,6 @@ class CarPath {
     end = end_.get();
     offsetDistance = offsetDistance_;
     generatePath();
-    
   }
   int getSize() {
     int size = points.size();

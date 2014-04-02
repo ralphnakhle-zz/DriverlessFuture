@@ -18,7 +18,10 @@ class CarSystem
   int parkedCars = 0;
   int parkingOffset = 40;
 
-  ArrayList <ParkingSpot> parkingSpots;
+
+  ArrayList <ParkingSpot> parkingSystem;
+
+  int carID = 0;
 
   // Constructor for the CarSystem class
   CarSystem(char scenario_) {
@@ -27,7 +30,7 @@ class CarSystem
     // initialize our array list of "Cars"
     Cars = new ArrayList<Car>();
     Ambulances = new ArrayList<Car>();
-    parkingSpots = new ArrayList<ParkingSpot>();
+    parkingSystem = new ArrayList<ParkingSpot>();
     carScenario = scenario_;
   }
 
@@ -41,7 +44,7 @@ class CarSystem
       for (int pR = 0; pR < 10; pR ++) {
 
         parkingPosition = new PVector(width /2+300 - 60*p, 120+ pR*50);
-        parkingSpots.add(new ParkingSpot(parkingPosition, false));
+        parkingSystem.add(new ParkingSpot(parkingPosition, false));
       }
     }
 
@@ -69,6 +72,8 @@ class CarSystem
       Cars.get(i).applyBehaviors(Cars);
     }
 
+
+    /// ambulance run loop
     if (Ambulances.size() >0) {
       for (int a = 0; a< Ambulances.size(); a++) {
         Ambulances.get(a).update();
@@ -85,14 +90,17 @@ class CarSystem
   void setCarPopulation(int incomingCarNumber) {
 
     if (incomingCarNumber ==1) {
+
       getCar();
       CarPopulation = Cars.size() ;
       println("ADD in class system carNumer::" + CarPopulation );
     }
-    else if (incomingCarNumber == 0) {
+    else if (incomingCarNumber == 0 ) {
       Cars.remove(CarPopulation-1);
       CarPopulation = Cars.size() ;
       println("REMOVE in class system carNumer::" + CarPopulation );
+      parkingSystem.get(CarPopulation).useParking(false);
+      parkingIndex--;
     }
   }
 
@@ -101,7 +109,7 @@ class CarSystem
   // method for setting up speed limit for all cars
   //---------------------------------------------------------------
 
-  void setCarSpeedLimit(float carSpeedLimit)
+    void setCarSpeedLimit(float carSpeedLimit)
   {
     for (int i = 0; i < CarPopulation; i ++) {
       Cars.get(i).setCarSpeedLimit(carSpeedLimit);
@@ -126,15 +134,31 @@ class CarSystem
   void triggerEvent() {
     if (carScenario == 'C') {
       println("Ambulance!");
-      Ambulances.add(new EmergencyVehicle());
+      Ambulances.add(new EmergencyVehicle(1));
     }
 
     if (carScenario == 'P') {
-
-      int randomCar = round(random(0, CarPopulation-1));
-      if (Cars.get(randomCar).parked == true) {
-        Cars.get(randomCar).getDestination(Cars.get(randomCar).position);
-        parkingSpots.get(randomCar).useParking(true);
+      boolean carLeft = false;
+      int counter = 0;
+      int randomCar ;
+      while (carLeft == false) {
+        randomCar = round(random(0, CarPopulation-1));
+        counter ++;
+        // check if the car is parked
+        if (Cars.get(randomCar).parked == true) {
+          // give that car a new destination 
+          Cars.get(randomCar).getDestination(Cars.get(randomCar).position);
+          // make the parking spot not busy
+          parkingSystem.get(randomCar).useParking(false);
+          // exit the while loop
+          carLeft = true;
+          println("found a car");
+        }
+        // if no cars match after 300 times, exit the while loop
+        if (counter>300) {          
+          carLeft = true;
+          println("no cars");
+        }
       }
     }
 
@@ -148,19 +172,54 @@ class CarSystem
   void getCar() {
     switch(scenario) {
     case 'C': 
-      Cars.add(new CityCar());
+      Cars.add(new CityCar(carID));
+      carID ++;
       break;
 
     case 'P': 
-      // define where the cars come in 
-      parkStart = new PVector(0-parkingIndex*80, height-50);
+      boolean foundSpot = false;
+      int pakingCounter = 0;
+      float lastCarX;
 
-      if (parkingSpots.get(parkingIndex).getParkingState() == false) {
-        parkPos = parkingSpots.get(parkingIndex).getParkingPosition();
+      if (parkingIndex>0) {
+        // last car position
+
+        lastCarX = Cars.get(parkingIndex-1).position.x;
+        if (lastCarX>0) { 
+          lastCarX = 100;
+        }
+        // define where the cars come in 
+        parkStart = new PVector(lastCarX-90, height-100);
+      }
+      else {
+        parkStart = new PVector(0, height-100);
+      }
+      // while loop to find an empty parking spot
+      while (foundSpot == false) {
+        // if the parking spot is not busy
+        if (parkingSystem.get(pakingCounter).getParkingState() == false) {
+          // get the parking spots position
+          parkPos = parkingSystem.get(pakingCounter).getParkingPosition();
+          // and a new car and assigne a parking spot to him
+          Cars.add(new ParkingCar(carID, parkStart, parkPos));
+          // make that parking spot busy
+          parkingSystem.get(pakingCounter).useParking(true);
+          // increment the car ID
+          carID ++;
+          // exit the while loop
+          foundSpot = true;
+        }
+        // increment the parking Counter
+        pakingCounter ++;
+        // if all the parking spots are full, exit the while loop
+        if (pakingCounter> CarPopulation) {
+          foundSpot = true;
+          println("parking is full!");
+        }
       }
 
-      Cars.add(new ParkingCar(parkStart, parkPos));
-      parkingSpots.get(parkingIndex).useParking(true);
+
+
 
       if (parkingIndex < CarPopulation) {
         parkingIndex ++;
@@ -169,7 +228,8 @@ class CarSystem
       break;
 
     case 'H': 
-      Cars.add(new CityCar());
+      Cars.add(new CityCar(carID));
+      carID ++;
 
       break;
 

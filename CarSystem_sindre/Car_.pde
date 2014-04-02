@@ -41,15 +41,20 @@ abstract class Car {
   boolean parked = false;
 
 
+  int carID;
+
+
 
   // constructor
-  Car() {
+  Car(int id) {
     // give starting position for the car
     position = getDestination(new PVector(0, 0));
     // get a first destination for the car
     carDestination = getDestination(position);
 
     safeZone = 100;
+
+    carID = id;
   }
 
   // update methode
@@ -228,44 +233,47 @@ abstract class Car {
       float distance = PVector.dist(position, other.position);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
 
-      if ((distance > 0) && (distance < safeZone)) {
+      if (carID != other.carID && (distance < safeZone/2)) {
         // Calculate vector pointing away from neighbor
         PVector diff = PVector.sub(position, other.position);
 
 
         float mainCarAngle = velocity.heading()+PI;
         float otherCarAngle = diff.heading();
-
+        float multiplier;
         // convert car angle 
         mainCarAngle = map(mainCarAngle, -PI, PI, 0, TWO_PI);
         otherCarAngle = map(otherCarAngle, -PI, PI, 0, TWO_PI);
 
+
+        diff.normalize();
+        diff.div(8);
+
         // check if the other car is in front of this car
         if (otherCarAngle < mainCarAngle+safeAngle &&  otherCarAngle > mainCarAngle-safeAngle) {
-          diff.normalize();
-          // if the car is straight in front..
-          if (otherCarAngle < mainCarAngle+PI/100 &&  otherCarAngle > mainCarAngle-PI/100 && distance<30) {
-            diff.div(2);        // Weight by distance
-          }
-          else {
-            diff.div(distance*0.1);        // Weight by distance
-          }
-          sForce = diff.get();
+          multiplier = 50/distance+6;
+          constrain(multiplier, 0, 15);
+          diff.mult(multiplier);
 
-
+          // graphical debuging
           if (debug) {
-            stroke(255, 80);
-            strokeWeight(1);
-            line(position.x, position.y, other.position.x, other.position.y);
             fill(100, 30);
+
             noStroke();
             arc(position.x, position.y, safeZone*2, safeZone*2, mainCarAngle-safeAngle, mainCarAngle+safeAngle, PIE);
           }
+        }
+
+        sForce = diff.get();
+        if (sForce.mag() > velocity.mag()) {
+          sForce = velocity.get();
+          sForce.mult(-1);
         }
       }
     }
 
 
+    // return the seperate force
     return sForce;
   }
 
@@ -275,6 +283,11 @@ abstract class Car {
   //---------------------------------------------------------------
 
   abstract PVector getDestination( PVector lastDestination); 
+
+  void getDestination( PVector lastDestination, PVector finalDestination) {
+  }
+
+
 
   //----------------------------------------------------------------------
   // method to set car speed limit - so it can be accessed from the Car System then the Gui - 

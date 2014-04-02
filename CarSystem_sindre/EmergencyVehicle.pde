@@ -1,7 +1,10 @@
 // a subclass of car for city cars
 class EmergencyVehicle extends Car {
-  EmergencyVehicle() {
-    super();
+
+  int gridSize;
+
+  EmergencyVehicle(int id) {
+    super(id);
   }
 
   // ----------------------------------------------------------------------
@@ -54,17 +57,18 @@ class EmergencyVehicle extends Car {
     PVector tempDestination = new PVector(0, 0);
     float randomX;
     float randomY;
-
-    randomX = cityGridSize* round(random(-1, width/cityGridSize)+1);
-    randomY = cityGridSize* round(random(-1, height/cityGridSize)+1);
+    gridSize = 180;
+    randomX = gridSize* round(random(-1, width/gridSize)+1);
+    randomY = gridSize* round(random(-1, height/gridSize)+1);
 
     tempDestination = new PVector(randomX, randomY);
 
     // create a path to follow
-    carPath = new CarPath(lastDestination, tempDestination, 10);
+    carPath = new CarPath(lastDestination, tempDestination, 0);
 
     return tempDestination;
   }
+
 
   // used for the path following code
   void seek(PVector target) {

@@ -6,7 +6,7 @@ class GUI {
 
   int controlMargin = width-width/10+10;
   int carNumber = 40;
-  float speedLimit = 2.5;
+  float speedLimit = 3;
   float steeringLimit = 0.3;
 
   // ----------------------------------------------------------------------
@@ -86,6 +86,14 @@ class GUI {
     //Plus minus rectangles
     rect(controlMargin, 611, 26, 26, 4);
     rect(controlMargin+40, 609, 30, 30, 4);
+
+
+    // text
+    fill(255);
+    textSize(10);
+    text(carNumber, controlMargin+65, 480);
+    text(int(speedLimit)*9 + "/mph", controlMargin+40, 540);
+    text(int(steeringLimit*10), controlMargin+50, 600);
   }
 
   void activateToggle() {
@@ -94,7 +102,7 @@ class GUI {
     //--------------------------------------------------
 
 
-    if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 491 && mouseY <= 517 && mousePressed) {
+    if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 491 && mouseY <= 517 && mousePressed ) {
       if (carNumber>=4) {
         carNumber --;
         systemOfCars.setCarPopulation(0);
@@ -108,9 +116,7 @@ class GUI {
       }
     }
 
-    fill(255);
-    textSize(10);
-    text(carNumber, controlMargin+65, 480);
+
 
     //--------------------------------------------------
     // Car Speed Toggle Setup
@@ -139,7 +145,7 @@ class GUI {
       systemOfCars.setCarSpeedLimit(speedLimit);
       println(speedLimit);
     }
-    text(int(speedLimit)*9 + "/mph", controlMargin+40, 540);
+
 
 
     //--------------------------------------------------
@@ -169,7 +175,6 @@ class GUI {
       systemOfCars.setCarSteerLimit(steeringLimit);
       println(steeringLimit);
     }
-    text(int(steeringLimit*10), controlMargin+50, 600);
   }
 
   void mouseEvent() {

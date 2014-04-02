@@ -7,12 +7,17 @@ class CityBg {
   float roadWidth;
   int grid;
 
-  CityBg(float r, int grid_) {
-    // Arbitrary radius of 20
-    roadWidth = r;
+  CityBg() {
+    //  radius of 20
+    roadWidth = 20;
     points = new ArrayList<PVector>();
-    grid = grid_;
+    grid = 180;
   }
+
+  float getGridSize() {
+    return grid;
+  }
+
 
   // Draw the Road
   void display() {
@@ -40,9 +45,8 @@ class CityBg {
     // draw buildings
     displayBuildings();
   }
-  
-  
-  
+
+
   void displayBuildings() {
     int buildingN = 6;
     float buildingSize = grid*0.5;
@@ -52,7 +56,7 @@ class CityBg {
 
     for (int bv = 0; bv < buildingN; bv++ ) {
       for (int bh = 0; bh < buildingN-1; bh++ ) {
-       // randomSeed(1000);
+        // randomSeed(1000);
         buildingHeight = 0.09;
         rectMode(CENTER);
         noStroke();

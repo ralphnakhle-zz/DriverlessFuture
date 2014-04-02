@@ -7,20 +7,31 @@ class ParkingCar extends Car {
   PVector parkingPosition;
 
 
-  ParkingCar(PVector start, PVector parkingPosition_) {
+
+  ParkingCar(int id, PVector start, PVector parkingPosition_) {
+    super(id);
     carRadius = 18;
-    parkingPosition = parkingPosition_.get();
+
     // give starting position for the car
     position = start.get();
     safeZone = 100;
     easing = 0.1;
     parked = false;
 
-    carPath = new CarPath(position, parkingPosition, 0);
+    parkingPosition = parkingPosition_.get();
+
+    carPath = new CarPath(position, parkingPosition, 30);
   }
+
+
 
   // update methode
   void update() {
+    //kill the cars in the top left corner
+    if (position.x<50 &&position.y<80) {
+      // remove car
+      //systemOfCars.setCarPopulation(0);
+    }
     if (!parked) {
       velocity.add(acceleration);
       // limit the velocity to the maximum speed alowd
@@ -30,11 +41,12 @@ class ParkingCar extends Car {
       // reset acceleration
       acceleration.mult(0);
     }
+    else if (parked) {
+    }
   }
 
   void applyBehaviors(ArrayList<Car> Cars) {
     PVector separateForce = separate(Cars);
-    separateForce.mult(2);
     if (!parked) {
       followPath();
     }
@@ -49,12 +61,17 @@ class ParkingCar extends Car {
     desired = PVector.sub(carPath.points.get(pathIndex), position); 
 
     // if the car is close enought to the first point  and is still in the first section
-    if (desired.mag()<30 && pathIndex == 1) {  
+    if (desired.mag()<20 && pathIndex == 1) {  
       pathIndex = 2;  
       desired = PVector.sub(carPath.points.get(pathIndex), position);
     }
     // if the car is close to the final target of the path
-    if (desired.mag()<2 && pathIndex == 2) { 
+    if (desired.mag()<15 && pathIndex == 2) { 
+      pathIndex = 3;  
+      desired = PVector.sub(carPath.points.get(pathIndex), position);
+    }
+    if (desired.mag()<5 && pathIndex == 3) { 
+      pathIndex = 1;  
 
       // if the car is in the exit lane
       if (position.y<80) {
@@ -67,6 +84,7 @@ class ParkingCar extends Car {
         velocity.mult(0);
       }
     }
+
 
     // Predict location 20 (arbitrary choice) frames ahead
     PVector predict = velocity.get();
@@ -93,19 +111,24 @@ class ParkingCar extends Car {
     seek(target);
   }
 
+  void getDestination( PVector lastDestination, PVector finalDestination) {
+    parked = false;
+    PVector tempDestination = finalDestination;
 
+    // create a path to follow
+    carPath = new CarPath(lastDestination, tempDestination, 0);
+  }
   PVector getDestination( PVector lastDestination) {
     parked = false;
     PVector tempDestination = new PVector(0, 0);
 
 
-    tempDestination = new PVector(lastDestination.x-30, 50);
+    tempDestination = new PVector(lastDestination.x+30, 50);
 
     // create a path to follow
     carPath = new CarPath(lastDestination, tempDestination, 0);
 
     return tempDestination;
-    //  return null;
   }
 }
 

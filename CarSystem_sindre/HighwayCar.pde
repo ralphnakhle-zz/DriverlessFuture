@@ -1,8 +1,8 @@
 // a subclass of car for city cars
 class HighwayCar extends Car {
 
-  HighwayCar() {
-    super();
+  HighwayCar(int id) {
+    super(id);
   }
 
   //---------------------------------------------------------------
