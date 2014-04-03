@@ -29,20 +29,6 @@ class Pedestrian {
   
   
   void update(Car car) {
-    //PVector diff = PVector.sub(location, car.position);
-    
-    //if(diff.mag()>0)
-    //{
-    // pedestrian move towards car
-      /*location.x += velocity.x;
-      location.y += velocity.y;*/
-      //location.add(velocity);
-      ///println(diff.mag());
-    //}
-    //else
-    //{
-      //println("on car");
-      //velocity = car.velocity.get();
       
       location.x = car.position.x;
       location.y = car.position.y;

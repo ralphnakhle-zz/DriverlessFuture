@@ -80,7 +80,8 @@ void draw() {
   systemOfCars.run();
   //display Gui
   gui.display();
-  gui.activateToggle();
+  gui.displayNumber();
+  //gui.activateToggle();
 }
 
 
@@ -91,8 +92,9 @@ public void keyPressed() {
   }
 }
 
-void mouseClicked() {  
+void mouseReleased() {  
   gui.mouseEvent();
+  gui.activateToggle();
   int controlMargin = width-width/10+10;
 
   if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 340) {
@@ -100,5 +102,6 @@ void mouseClicked() {
     systemOfCars = new CarSystem(scenario);
     systemOfCars.init();
   }
+  
 }
 
