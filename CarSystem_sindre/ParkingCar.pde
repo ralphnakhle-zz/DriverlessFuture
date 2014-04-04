@@ -7,7 +7,6 @@ class ParkingCar extends Car {
   PVector parkingPosition;
 
 
-
   ParkingCar(int id, PVector start, PVector parkingPosition_) {
     super(id);
     carRadius = 18;
@@ -30,7 +29,8 @@ class ParkingCar extends Car {
     //kill the cars in the top left corner
     if (position.x<50 &&position.y<80) {
       // remove car
-      //systemOfCars.setCarPopulation(0);
+      println("remove this car");
+      trashIt = true;     
     }
     if (!parked) {
       velocity.add(acceleration);
@@ -44,6 +44,9 @@ class ParkingCar extends Car {
     else if (parked) {
     }
   }
+
+
+
 
   void applyBehaviors(ArrayList<Car> Cars) {
     PVector separateForce = separate(Cars);

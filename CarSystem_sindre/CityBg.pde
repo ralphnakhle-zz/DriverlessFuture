@@ -43,21 +43,21 @@ class CityBg {
     }
 
     // draw buildings
-    displayBuildings();
+   // displayBuildings();
   }
 
 
   void displayBuildings() {
-    int buildingN = 6;
+    int buildingN = 7;
     float buildingSize = grid*0.5;
     float offsetX=0;
     float offsetY=0;
-    float buildingHeight = 0.04;
+    float buildingHeight;
 
     for (int bv = 0; bv < buildingN; bv++ ) {
       for (int bh = 0; bh < buildingN-1; bh++ ) {
         // randomSeed(1000);
-        buildingHeight = 0.09;
+        buildingHeight = 0.15;
         rectMode(CENTER);
         noStroke();
         fill(25);

@@ -16,7 +16,7 @@ abstract class Car {
   float safeZone;
 
   // variable for speed limit
-  float speedLimit = 3;
+  float speedLimit = 2.5;
 
   // Maximum steering force
   float steerLimit = 0.3;  
@@ -39,6 +39,7 @@ abstract class Car {
 
 
   boolean parked = false;
+  boolean trashIt = false;
 
 
   int carID;
@@ -75,6 +76,8 @@ abstract class Car {
     followPath();
     applyForce(separateForce);
   }
+  void applyBehaviors(ArrayList<Car> Cars, ArrayList<Car> Amb) {
+  }
 
 
   // apply Force methode
@@ -82,6 +85,16 @@ abstract class Car {
     acceleration.add(force);
   }
 
+
+  // a methode to remove unwatned cars
+  boolean trash() {
+    if (trashIt) {
+      return true;
+    }
+    else { 
+      return false;
+    }
+  }
 
   // ----------------------------------------------------------------------
   //  Car display
@@ -233,7 +246,7 @@ abstract class Car {
       float distance = PVector.dist(position, other.position);
       // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
 
-      if (carID != other.carID && (distance < safeZone/2)) {
+      if (carID != other.carID && (distance < safeZone)) {
         // Calculate vector pointing away from neighbor
         PVector diff = PVector.sub(position, other.position);
 
@@ -251,14 +264,13 @@ abstract class Car {
 
         // check if the other car is in front of this car
         if (otherCarAngle < mainCarAngle+safeAngle &&  otherCarAngle > mainCarAngle-safeAngle) {
-          multiplier = 50/distance+6;
+          multiplier = 100/distance;
           constrain(multiplier, 0, 15);
           diff.mult(multiplier);
 
           // graphical debuging
           if (debug) {
             fill(100, 30);
-
             noStroke();
             arc(position.x, position.y, safeZone*2, safeZone*2, mainCarAngle-safeAngle, mainCarAngle+safeAngle, PIE);
           }

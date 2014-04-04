@@ -6,18 +6,13 @@ class CarSystem
   //List Array containing the cars
   ArrayList <Car> Cars;
   ArrayList <Car> Ambulances;
-
-
   char carScenario;
-
 
   // parking variables
   PVector parkPos;
   PVector parkStart;
-  int parkingIndex = 0;
-  int parkedCars = 0;
+  // int parkingIndex = 0;
   int parkingOffset = 40;
-
 
   ArrayList <ParkingSpot> parkingSystem;
 
@@ -42,7 +37,6 @@ class CarSystem
     PVector parkingPosition;
     for (int p = 0; p < 10; p ++) {
       for (int pR = 0; pR < 10; pR ++) {
-
         parkingPosition = new PVector(width /2+300 - 60*p, 120+ pR*50);
         parkingSystem.add(new ParkingSpot(parkingPosition, false));
       }
@@ -54,8 +48,6 @@ class CarSystem
     }
   }
 
-
-
   //---------------------------------------------------------------
   // method to display our car system
   //---------------------------------------------------------------
@@ -63,23 +55,35 @@ class CarSystem
   void run()
   {
     for (int i = 0; i< CarPopulation; i++) {
+      if (scenario == 'P' && Cars.get(i).trash()) {
+        Cars.remove(i);
+        CarPopulation = Cars.size() ;
+        //parkingIndex--;
+      }
       //update position
       Cars.get(i).update();
       //display the car
 
       Cars.get(i).display();
+      if (scenario == 'C') {
+        Cars.get(i).applyBehaviors(Cars, Ambulances);
+      }
 
-      Cars.get(i).applyBehaviors(Cars);
+      else {      
+        Cars.get(i).applyBehaviors(Cars);
+      }
     }
 
-
-    /// ambulance run loop
-    if (Ambulances.size() >0) {
-      for (int a = 0; a< Ambulances.size(); a++) {
-        Ambulances.get(a).update();
-        //display the car
-        Ambulances.get(a).display();
-        Ambulances.get(a).applyBehaviors(Ambulances);
+    if (scenario == 'C') {
+      /// ambulance run loop
+      if (Ambulances.size() >0) {
+        for (int a = 0; a< Ambulances.size(); a++) {
+          Ambulances.get(a).update();
+          //display the car
+          Ambulances.get(a).display();
+          Ambulances.get(a).applyBehaviors(Cars);
+          //  Ambulances.get(a).applyBehaviors(Cars);
+        }
       }
     }
   }
@@ -96,26 +100,31 @@ class CarSystem
       println("ADD in class system carNumer::" + CarPopulation );
     }
     else if (incomingCarNumber == 0 ) {
-      Cars.remove(CarPopulation-1);
-      CarPopulation = Cars.size() ;
-      println("REMOVE in class system carNumer::" + CarPopulation );
-      parkingSystem.get(CarPopulation).useParking(false);
-      parkingIndex--;
+      if (scenario == 'P') {
+        triggerEvent();
+      }
+      else {
+        Cars.remove(CarPopulation-1);
+        CarPopulation = Cars.size() ;
+        println("REMOVE in class system carNumer::" + CarPopulation );
+      }
     }
   }
 
 
+  int getCarPopulation() {
+    return CarPopulation;
+  }
   //---------------------------------------------------------------
   // method for setting up speed limit for all cars
   //---------------------------------------------------------------
 
-    void setCarSpeedLimit(float carSpeedLimit)
+  void setCarSpeedLimit(float carSpeedLimit)
   {
     for (int i = 0; i < CarPopulation; i ++) {
       Cars.get(i).setCarSpeedLimit(carSpeedLimit);
     }
   }
-
 
   //---------------------------------------------------------------
   // method for setting up Steering limit for all cars
@@ -133,8 +142,10 @@ class CarSystem
   //---------------------------------------------------------------
   void triggerEvent() {
     if (carScenario == 'C') {
-      println("Ambulance!");
-      Ambulances.add(new EmergencyVehicle(1));
+      if (Ambulances.size()<1) {
+        Ambulances.add(new EmergencyVehicle(1));
+        // println("Ambulance!");
+      }
     }
 
     if (carScenario == 'P') {
@@ -181,15 +192,15 @@ class CarSystem
       int pakingCounter = 0;
       float lastCarX;
 
-      if (parkingIndex>0) {
+      if (Cars.size()>0) {
         // last car position
 
-        lastCarX = Cars.get(parkingIndex-1).position.x;
+        lastCarX = Cars.get(Cars.size()-1).position.x;
         if (lastCarX>0) { 
-          lastCarX = 100;
+          lastCarX = 0;
         }
         // define where the cars come in 
-        parkStart = new PVector(lastCarX-90, height-100);
+        parkStart = new PVector(lastCarX-100, height-100);
       }
       else {
         parkStart = new PVector(0, height-100);
@@ -209,20 +220,14 @@ class CarSystem
           // exit the while loop
           foundSpot = true;
         }
+
+        // if all the parking spots are full, exit the while loop
+        else if (pakingCounter> CarPopulation) {
+          foundSpot = true;
+          //println("parking is full!");
+        }
         // increment the parking Counter
         pakingCounter ++;
-        // if all the parking spots are full, exit the while loop
-        if (pakingCounter> CarPopulation) {
-          foundSpot = true;
-          println("parking is full!");
-        }
-      }
-
-
-
-
-      if (parkingIndex < CarPopulation) {
-        parkingIndex ++;
       }
 
       break;

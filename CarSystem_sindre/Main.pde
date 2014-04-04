@@ -24,9 +24,10 @@ char scenario;
 //  FUNCTIONS
 // ----------------------------------------------------------------------
 void setup() {
-  frameRate(30);
-
+  frameRate(24);
+  // canvas size HD
   size(1200, 700);
+  // default scenario
   scenario = 'C';
   //initialize Gui 
   gui = new GUI();
@@ -35,10 +36,9 @@ void setup() {
   highwayBg = new HighwayBg(40);
   parkingBg = new ParkingBg();
 
-  // Call a function to generate new Path object
-
-
+  // create a system of cars
   systemOfCars = new CarSystem(scenario);
+  // initialise the system of cars
   systemOfCars.init();
 }
 
@@ -57,17 +57,23 @@ void draw() {
   case 'C': 
     // Display the road
     cityBg.display();
+    systemOfCars.run();
+    cityBg.displayBuildings();
 
     break;
 
   case 'P': 
     // println("Scenario : P");  
     parkingBg.display();
+    systemOfCars.run();
+
     break;
 
   case 'H': 
     // Display the road
     highwayBg.display();
+    systemOfCars.run();
+
     break;
 
   case 'S': 
@@ -79,7 +85,7 @@ void draw() {
 
 
   // run the car system
-  systemOfCars.run();
+  // systemOfCars.run();
   //display Gui
   gui.display();
 }
@@ -92,7 +98,7 @@ public void keyPressed() {
   }
 }
 
-void mousePressed() {  
+void mouseClicked() {  
   gui.activateToggle();
   gui.mouseEvent();
   int controlMargin = width-width/10+10;

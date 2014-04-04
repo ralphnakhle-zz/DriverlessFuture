@@ -5,7 +5,25 @@ class EmergencyVehicle extends Car {
 
   EmergencyVehicle(int id) {
     super(id);
+
+    steerLimit = 0.8;  
+    easing = 0.3;
   }
+
+  // update methode
+  void update() {
+    velocity.add(acceleration);
+
+    velocity.mult(1.8);
+    // limit the velocity to the maximum speed alowd
+    velocity.limit(speedLimit*1.5);
+    // add the velocity to the position
+    position.add(velocity);
+    // reset acceleration
+    acceleration.mult(0);
+  }
+
+
 
   // ----------------------------------------------------------------------
   //  Car display
@@ -13,7 +31,7 @@ class EmergencyVehicle extends Car {
   void display() {
     fill(250, 230, 0);
     noStroke();
-    int AmbSize = 10;
+    int AmbSize = 9;
     carAngle = velocity.heading() + PI/2;
 
     float dir = (carAngle - targetCarAngle) / TWO_PI;
@@ -58,8 +76,8 @@ class EmergencyVehicle extends Car {
     float randomX;
     float randomY;
     gridSize = 180;
-    randomX = gridSize* round(random(-1, width/gridSize)+1);
-    randomY = gridSize* round(random(-1, height/gridSize)+1);
+    randomX = gridSize* round(random(1, width/gridSize));
+    randomY = gridSize* round(random(1, height/gridSize));
 
     tempDestination = new PVector(randomX, randomY);
 
@@ -67,22 +85,6 @@ class EmergencyVehicle extends Car {
     carPath = new CarPath(lastDestination, tempDestination, 0);
 
     return tempDestination;
-  }
-
-
-  // used for the path following code
-  void seek(PVector target) {
-    PVector desired = PVector.sub(target, position);  // A vector pointing from the position to the target
-    // If the magnitude of desired equals 0, skip out of here
-    if (desired.mag() == 0) return;
-
-    // Normalize desired and scale to maximum speed
-    desired.normalize();
-    desired.mult(speedLimit*4);
-    // Steering = Desired minus Velocity
-    PVector steer = PVector.sub(desired, velocity);
-    steer.limit(steerLimit*2);  // Limit to maximum steering force
-    applyForce(steer);
   }
 }
 
