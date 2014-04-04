@@ -1,38 +1,34 @@
-/*
-class button {
+// Learning Processing
+// Daniel Shiffman
+// http://www.learningprocessing.com
 
-  int x;
-  int y;
-  int size;
-  boolean pressed;
-  boolean over;
-  boolean locked;
+// Example 10-5: Object-oriented timer
 
-
-  button(int xT, int yT, int sizeT, boolean pressedT) {
-    xT = x;  
-    yT = y;
-    sizeT = size;
-    pressedT = pressed;
+class Timer {
+ 
+  int savedTime; // When Timer started
+  int totalTime; // How long Timer should last
+  
+  Timer(int tempTotalTime) {
+    totalTime = tempTotalTime;
   }
-
-  boolean state() 
-  {
-    if (mouseX > x && mouseX < x+size && mouseY > y && mouseY < y+size) 
-    {
-      if (mousePressed)
-      {
-        pressed = true;
-        return true;
-      }
-      else {
-        pressed = false;
-        return false;
-      }
-      return pressed;
+  
+  // Starting the timer
+  void start() {
+    // When the timer starts it stores the current time in milliseconds.
+    savedTime = millis(); 
+  }
+  
+  // The function isFinished() returns true if 5,000 ms have passed. 
+  // The work of the timer is farmed out to this method.
+  boolean isFinished() { 
+    // Check how much time has passed
+    int passedTime = millis()- savedTime;
+    if (passedTime > totalTime) {
+      return true;
+    } else {
+      return false;
     }
   }
-
-  
-}*/
+}
 

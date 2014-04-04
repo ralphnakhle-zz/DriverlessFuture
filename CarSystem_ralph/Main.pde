@@ -23,7 +23,8 @@ int gridSize = 1;
 //  FUNCTIONS
 // ----------------------------------------------------------------------
 void setup() {
-  size(900, 700);
+//size(displayWidth, displayHeight);
+size(900, 700);
   scenario = 'C';
   //initialize Gui 
   gui = new GUI();

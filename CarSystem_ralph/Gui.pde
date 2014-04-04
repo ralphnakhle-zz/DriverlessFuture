@@ -8,6 +8,8 @@ class GUI {
   int carNumber = 40;
   float speedLimit = 3;
   float steeringLimit = 0.3;
+  float alpha;
+  String text;
 
   // ----------------------------------------------------------------------
   //  GUI KNOBS
@@ -86,6 +88,32 @@ class GUI {
     //Plus minus rectangles
     rect(controlMargin, 611, 26, 26, 4);
     rect(controlMargin+40, 609, 30, 30, 4);
+    
+    
+    if(scenario == 'C'){
+      text = "City";
+     alpha -= 1; 
+    }  
+    
+    if(scenario == 'P'){
+      text = "Parking";
+     alpha -= 1; 
+    }  
+    
+    if(scenario == 'H'){
+      text = "Highway";
+     alpha -= 1; 
+    }  
+    
+    if(scenario == 'S'){
+      text = "Shared Auto";
+     alpha -= 1; 
+    }  
+    
+    fill(255, alpha);
+    text(text, width/2, height/2);
+    
+    
   }
 
   void activateToggle() {
@@ -184,20 +212,26 @@ class GUI {
     // City traffic button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
       scenario = 'C';
+      alpha = 255;
+       
+       
     }
     // Highway button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
       scenario = 'H';
+      alpha = 255;
       //carNumber = 100;
     }
     // Parking button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 220 && mouseY <= 270) {
-      //  scenario = 'P';
+      alpha = 255;
+      //scenario = 'P';
     }
 
     // Shared comodity button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 300 && mouseY <= 350) {
         scenario = 'S';
+        alpha = 255;
     }
 
 

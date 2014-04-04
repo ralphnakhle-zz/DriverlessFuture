@@ -13,6 +13,8 @@ class CarSystem
   char carScenario;
   int randomX;
   int randomY;
+  
+  boolean toggle = false;
 
   Car tempCar;
 
@@ -29,7 +31,8 @@ class CarSystem
     Ambulances = new ArrayList<Car>();
     Accident = new PVector(width/2, height/2);
 
-    pedestrian = new Pedestrian (new PVector(width/2, height/2));
+    pedestrian = new Pedestrian (new PVector(width/2+10, height/2));
+    
 
     accidentClass = new AccidentClass();
 
@@ -73,17 +76,16 @@ class CarSystem
         Cars.get(i).applyAccidentBehaviors(Accident);
         accidentClass.displayAccident(randomX, randomY);
       }
-
-      if (scenario == 'S') {
+      // trigger condition
+      if (scenario == 'S' && toggle == true) {
 
         if (pedestrian.pickedUp == false && pedestrian.canBePickedUp == true) {
 
           if (Cars.get(i).findTargetCarfromPedestrian(pedestrian) == true) { 
             tempCar = Cars.get(i);
-            println("picked up");
+            //println("picked up");   
           }
         }
-
         pedestrian.display();
       }
     }
@@ -94,13 +96,17 @@ class CarSystem
       pedestrian.update(tempCar);
       tempCar.applyPedestrianBehaviors(pedestrian);
 
-      float dist = PVector.dist(tempCar.carDestination, tempCar.position);
+      float dist = PVector.dist(tempCar.carPath.points.get(3), tempCar.position);
 
       println(dist);
       if (dist < 50) {
         println(pedestrian.canBePickedUp);
-        pedestrian.reset();
+        
+       pedestrian.canBePickedUp = true;
+       //pedestrian.pickedUp=false;
+       pedestrian.reset();
       }
+     
     }
   
   
@@ -197,40 +203,26 @@ class CarSystem
     }
 
     if (carScenario == 'S') {
-
-    }
-  }
-
-  void triggerPedestrian() {
-
-
-    //      if (pedestrian.pickedUp == false && pedestrian.canBePickedUp == true) {
-    //
-    //        if (Cars.get(i).findTargetCarfromPedestrian(pedestrian) == true) { 
-    //          tempCar = Cars.get(i);
-    //          println("picked up");
-    //        }
-    //      }
-    //
-    //      pedestrian.display();
-
-
-
-    if (pedestrian.pickedUp==true && scenario=='S')
-    {
-
-      pedestrian.update(tempCar);
-      tempCar.applyPedestrianBehaviors(pedestrian);
-
-      float dist = PVector.dist(tempCar.carDestination, tempCar.position);
-
-      println(dist);
-      if (dist < 50) {
-        println(pedestrian.canBePickedUp);
-        pedestrian.reset();
+    toggle = true;
+    if(toggle = true){
+      int offset = 15;
+      int randomize = (int)random(0, 2);
+      int mult = 0;
+      if (randomize == 0 ) {
+        mult = -1;
       }
+      if (randomize == 1 ) {
+        mult = 1;
+      }
+    randomX = cityGridSize* round(random(-1, width/cityGridSize)+1)+mult*offset;
+    randomY = cityGridSize* round(random(-1, height/cityGridSize)+1)+mult*offset;
+    pedestrian = new Pedestrian (new PVector(randomX, randomY));
+    }
+    //toggle = false;
+    
     }
   }
+
 
 
 
