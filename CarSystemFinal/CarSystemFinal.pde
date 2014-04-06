@@ -13,7 +13,7 @@ class CarSystem
   char carScenario;
   int randomX;
   int randomY;
-  
+
   // parking variables
   PVector parkPos;
   PVector parkStart;
@@ -22,7 +22,7 @@ class CarSystem
   ArrayList <ParkingSpot> parkingSystem;
 
   int carID = 0;
-  
+
   boolean toggle = false;
 
   Car tempCar;
@@ -50,7 +50,7 @@ class CarSystem
   //---------------------------------------------------------------
 
   void init() {
-    
+
     PVector parkingPosition;
     for (int p = 0; p < 10; p ++) {
       for (int pR = 0; pR < 10; pR ++) {
@@ -58,7 +58,7 @@ class CarSystem
         parkingSystem.add(new ParkingSpot(parkingPosition, false));
       }
     }
-    
+
     for (int i = 0; i < CarPopulation; i ++) {
       //create new car
       getCar();
@@ -78,19 +78,19 @@ class CarSystem
   void run()
   {
     for (int i = 0; i< CarPopulation; i++) {
-      
+
       if (scenario == 'P' && Cars.get(i).trash()) {
         Cars.remove(i);
         CarPopulation = Cars.size() ;
       }
-      
+
       //update position
       Cars.get(i).update();
       //display the car
 
       Cars.get(i).display();
-      
-            if (scenario == 'C') {
+
+      if (scenario == 'C') {
         Cars.get(i).applyBehaviors(Cars, Ambulances);
       }
       else {      
@@ -109,7 +109,7 @@ class CarSystem
 
           if (Cars.get(i).findTargetCarfromPedestrian(pedestrian) == true) { 
             tempCar = Cars.get(i);
-            //println("picked up");   
+            //println("picked up");
           }
         }
         pedestrian.display();
@@ -127,16 +127,15 @@ class CarSystem
       println(dist);
       if (dist < 50) {
         println(pedestrian.canBePickedUp);
-        
-       pedestrian.canBePickedUp = true;
-       //pedestrian.pickedUp=false;
-       pedestrian.reset();
+
+        pedestrian.canBePickedUp = true;
+        //pedestrian.pickedUp=false;
+        pedestrian.reset();
       }
-     
     }
-  
-  
-  if (scenario == 'C') {
+
+
+    if (scenario == 'C') {
       /// ambulance run loop
       if (Ambulances.size() >0) {
         for (int a = 0; a< Ambulances.size(); a++) {
@@ -148,7 +147,7 @@ class CarSystem
         }
       }
     }
-}
+  }
 
   //---------------------------------------------------------------
   // Method to setting car population number Gui buttons
@@ -156,7 +155,7 @@ class CarSystem
 
   void setCarPopulation(int incomingCarNumber)
   {
-     if (incomingCarNumber ==1) {
+    if (incomingCarNumber ==1) {
 
       getCar();
       CarPopulation = Cars.size() ;
@@ -165,6 +164,7 @@ class CarSystem
     else if (incomingCarNumber == 0 ) {
       if (scenario == 'P') {
         triggerEvent();
+        CarPopulation = Cars.size() ;
       }
       else {
         Cars.remove(CarPopulation-1);
@@ -202,18 +202,19 @@ class CarSystem
   // method for trigger event 
   //---------------------------------------------------------------
   void triggerEvent() {
-     if (carScenario == 'C') {
+    if (carScenario == 'C') {
       if (Ambulances.size()<1) {
         Ambulances.add(new EmergencyVehicle(1));
         // println("Ambulance!");
       }
     }
-    
-    
+
+
     if (carScenario == 'P') {
       boolean carLeft = false;
       int counter = 0;
       int randomCar ;
+      int parkingId;
       while (carLeft == false) {
         randomCar = round(random(0, CarPopulation-1));
         counter ++;
@@ -221,8 +222,10 @@ class CarSystem
         if (Cars.get(randomCar).parked == true) {
           // give that car a new destination 
           Cars.get(randomCar).getDestination(Cars.get(randomCar).position);
+
+          parkingId = Cars.get(randomCar).getParkingId();
           // make the parking spot not busy
-          parkingSystem.get(randomCar).useParking(false);
+          parkingSystem.get(parkingId).useParking(false);
           // exit the while loop
           carLeft = true;
           println("found a car");
@@ -234,8 +237,8 @@ class CarSystem
         }
       }
     }
-    
-    
+
+
     if (carScenario == 'H') {
       println("Accident!");
 
@@ -254,26 +257,24 @@ class CarSystem
       randomY = height/2 + northSouth*(60+40*Yoffset);
       Accident = new PVector(randomX, randomY);
       testColor = 255;
-
     }
 
     if (carScenario == 'S') {
-    toggle = true;
-    if(toggle = true){
-      int offset = 15;
-      int randomize = (int)random(0, 2);
-      int mult = 0;
-      if (randomize == 0 ) {
-        mult = -1;
+      toggle = true;
+      if (toggle = true) {
+        int offset = 15;
+        int randomize = (int)random(0, 2);
+        int mult = 0;
+        if (randomize == 0 ) {
+          mult = -1;
+        }
+        if (randomize == 1 ) {
+          mult = 1;
+        }
+        randomX = cityGridSize* round(random(-1, width/cityGridSize)+1)+mult*offset;
+        randomY = cityGridSize* round(random(-1, height/cityGridSize)+1)+mult*offset;
+        pedestrian = new Pedestrian (new PVector(randomX, randomY));
       }
-      if (randomize == 1 ) {
-        mult = 1;
-      }
-    randomX = cityGridSize* round(random(-1, width/cityGridSize)+1)+mult*offset;
-    randomY = cityGridSize* round(random(-1, height/cityGridSize)+1)+mult*offset;
-    pedestrian = new Pedestrian (new PVector(randomX, randomY));
-    }
-    
     }
   }
 
@@ -292,7 +293,7 @@ class CarSystem
 
     case 'P': 
       boolean foundSpot = false;
-      int pakingCounter = 0;
+      int parkingCounter = 0;
       float lastCarX;
 
       if (Cars.size()>0) {
@@ -303,21 +304,21 @@ class CarSystem
           lastCarX = 0;
         }
         // define where the cars come in 
-        parkStart = new PVector(lastCarX-100, height-100);
+        parkStart = new PVector(lastCarX-100, height-50);
       }
       else {
-        parkStart = new PVector(0, height-100);
+        parkStart = new PVector(0, height-50);
       }
       // while loop to find an empty parking spot
       while (foundSpot == false) {
         // if the parking spot is not busy
-        if (parkingSystem.get(pakingCounter).getParkingState() == false) {
+        if (parkingSystem.get(parkingCounter).getParkingState() == false) {
           // get the parking spots position
-          parkPos = parkingSystem.get(pakingCounter).getParkingPosition();
+          parkPos = parkingSystem.get(parkingCounter).getParkingPosition();
           // and a new car and assigne a parking spot to him
-          Cars.add(new ParkingCar(carID, parkStart, parkPos));
+          Cars.add(new ParkingCar(carID, parkStart, parkPos, parkingCounter));
           // make that parking spot busy
-          parkingSystem.get(pakingCounter).useParking(true);
+          parkingSystem.get(parkingCounter).useParking(true);
           // increment the car ID
           carID ++;
           // exit the while loop
@@ -325,12 +326,12 @@ class CarSystem
         }
 
         // if all the parking spots are full, exit the while loop
-        else if (pakingCounter> CarPopulation) {
+        else if (parkingCounter> CarPopulation) {
           foundSpot = true;
           //println("parking is full!");
         }
         // increment the parking Counter
-        pakingCounter ++;
+        parkingCounter ++;
       }
 
       break;
@@ -343,7 +344,7 @@ class CarSystem
 
     case 'S':
       Cars.add(new CityCar(carID));
-     carID ++; 
+      carID ++; 
       break;
 
     default:             // Default executes if the case labels

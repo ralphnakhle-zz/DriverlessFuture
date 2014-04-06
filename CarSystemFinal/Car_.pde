@@ -57,6 +57,10 @@ abstract class Car {
     carID = id;
   }
 
+  int getParkingId() {
+    return 0 ;
+  }
+
   // update methode
   void update() {
     velocity.add(acceleration);

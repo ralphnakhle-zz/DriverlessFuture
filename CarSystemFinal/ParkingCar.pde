@@ -5,9 +5,10 @@ class ParkingCar extends Car {
   float parkingWidth = width - 300;
   float parkingHeight = height - 200;
   PVector parkingPosition;
+  int parkingId;
 
 
-  ParkingCar(int id, PVector start, PVector parkingPosition_) {
+  ParkingCar(int id, PVector start, PVector parkingPosition_, int parkingId_ ) {
     super(id);
     carRadius = 18;
 
@@ -16,13 +17,16 @@ class ParkingCar extends Car {
     safeZone = 100;
     easing = 0.1;
     parked = false;
+    parkingId = parkingId_;
 
     parkingPosition = parkingPosition_.get();
 
     carPath = new CarPath(position, parkingPosition, 30);
   }
 
-
+  int getParkingId() {
+    return parkingId;
+  }
 
   // update methode
   void update() {
@@ -30,7 +34,7 @@ class ParkingCar extends Car {
     if (position.x<50 &&position.y<80) {
       // remove car
       println("remove this car");
-      trashIt = true;     
+      trashIt = true;
     }
     if (!parked) {
       velocity.add(acceleration);

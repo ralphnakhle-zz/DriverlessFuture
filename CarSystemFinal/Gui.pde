@@ -88,32 +88,30 @@ class GUI {
     //Plus minus rectangles
     rect(controlMargin, 611, 26, 26, 4);
     rect(controlMargin+40, 609, 30, 30, 4);
-    
-    
-    if(scenario == 'C'){
+
+
+    if (scenario == 'C') {
       text = "City";
-     alpha -= 1; 
+      alpha -= 1;
     }  
-    
-    if(scenario == 'P'){
+
+    if (scenario == 'P') {
       text = "Parking";
-     alpha -= 1; 
+      alpha -= 1;
     }  
-    
-    if(scenario == 'H'){
+
+    if (scenario == 'H') {
       text = "Highway";
-     alpha -= 1; 
+      alpha -= 1;
     }  
-    
-    if(scenario == 'S'){
+
+    if (scenario == 'S') {
       text = "Shared Auto";
-     alpha -= 1; 
+      alpha -= 1;
     }  
-    
+
     fill(255, alpha);
     text(text, width/2, height/2);
-    
-    
   }
 
   void activateToggle() {
@@ -122,19 +120,19 @@ class GUI {
     //--------------------------------------------------
 
     if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 491 && mouseY <= 517 ) {
-      if (carNumber>=4) {
-        carNumber --;
+      if (systemOfCars.getCarPopulation()>=4) {
+       // carNumber --;
         systemOfCars.setCarPopulation(0);
       }
     }
 
     if (mouseX >= controlMargin+40 && mouseX <= controlMargin+70 && mouseY >= 491 && mouseY <= 521) {
-      if (carNumber < 100) {
-        carNumber++;
+      if (systemOfCars.getCarPopulation() < 100) {
+        //carNumber++;
         systemOfCars.setCarPopulation(1);
       }
     }
-    
+
     //--------------------------------------------------
     // Car Speed Toggle Setup
     //--------------------------------------------------
@@ -200,8 +198,7 @@ class GUI {
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 110) {
       scenario = 'C';
       alpha = 255;
-       carNumber = 40;
-       
+      carNumber = 40;
     }
     // Highway button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 140 && mouseY <= 190) {
@@ -218,9 +215,9 @@ class GUI {
 
     // Shared comodity button
     if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 300 && mouseY <= 350) {
-        scenario = 'S';
-        alpha = 255;
-        carNumber = 40;
+      scenario = 'S';
+      alpha = 255;
+      carNumber = 40;
     }
 
 
@@ -229,12 +226,13 @@ class GUI {
       systemOfCars.triggerEvent();
     }
   }
-  
-  void displayNumber(){
-  carNumber = systemOfCars.getCarPopulation();
-  text(carNumber, controlMargin+65, 480);
-  text(int(speedLimit)*9 + "/mph", controlMargin+40, 540);
-  text(int(steeringLimit*10), controlMargin+50, 600);
+
+  void displayNumber() {
+    fill(255);
+    carNumber = systemOfCars.getCarPopulation();
+    text(carNumber, controlMargin+65, 480);
+    text(int(speedLimit)*9 + "/mph", controlMargin+40, 540);
+    text(int(steeringLimit*10), controlMargin+50, 600);
   }
 }
 
