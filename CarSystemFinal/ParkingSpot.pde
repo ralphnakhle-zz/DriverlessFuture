@@ -1,9 +1,13 @@
 // a class to mange parking spots with states and position
 
 class ParkingSpot {
+  // parkingSpot position
   PVector position;
+  // parkingSpot state
   boolean busy;
-
+  // ----------------------------------------------------------------------
+  //  parking spot constructor
+  // ----------------------------------------------------------------------
   ParkingSpot(PVector position_, boolean busy_) {
 
     position = position_;

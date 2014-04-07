@@ -7,9 +7,12 @@ class ParkingCar extends Car {
   PVector parkingPosition;
   int parkingId;
 
-
+  // ----------------------------------------------------------------------
+  //  parking car constructor
+  // ----------------------------------------------------------------------
   ParkingCar(int id, PVector start, PVector parkingPosition_, int parkingId_ ) {
     super(id);
+    // costum car size
     carRadius = 18;
 
     // give starting position for the car
@@ -24,18 +27,21 @@ class ParkingCar extends Car {
     carPath = new CarPath(position, parkingPosition, 30);
   }
 
+  // a methode to get the parking ID 
   int getParkingId() {
     return parkingId;
   }
 
-  // update methode
+  // ----------------------------------------------------------------------
+  //  costum update fonction
+  // ----------------------------------------------------------------------
   void update() {
     //kill the cars in the top left corner
     if (position.x<50 &&position.y<80) {
       // remove car
-      println("remove this car");
       trashIt = true;
     }
+    // if the car is not parked, update..
     if (!parked) {
       velocity.add(acceleration);
       // limit the velocity to the maximum speed alowd
@@ -45,22 +51,28 @@ class ParkingCar extends Car {
       // reset acceleration
       acceleration.mult(0);
     }
+    // if paked
     else if (parked) {
     }
   }
 
 
-
+  // ----------------------------------------------------------------------
+  // costum applyBehaviors for parking car
+  // ----------------------------------------------------------------------
 
   void applyBehaviors(ArrayList<Car> Cars) {
     PVector separateForce = separate(Cars);
+    // only follow path if the car is not parked
     if (!parked) {
       followPath();
     }
     applyForce(separateForce);
   }
 
-
+  // ----------------------------------------------------------------------
+  // costum path following
+  // ----------------------------------------------------------------------
   void followPath() {
     // PVector for the desired position
     PVector desired;
@@ -118,6 +130,10 @@ class ParkingCar extends Car {
     seek(target);
   }
 
+
+  // ----------------------------------------------------------------------
+  // costum get destination for parking cars
+  // ----------------------------------------------------------------------
   void getDestination( PVector lastDestination, PVector finalDestination) {
     parked = false;
     PVector tempDestination = finalDestination;
@@ -125,10 +141,10 @@ class ParkingCar extends Car {
     // create a path to follow
     carPath = new CarPath(lastDestination, tempDestination, 0);
   }
+  
   PVector getDestination( PVector lastDestination) {
     parked = false;
     PVector tempDestination = new PVector(0, 0);
-
 
     tempDestination = new PVector(lastDestination.x+30, 50);
 

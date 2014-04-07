@@ -1,3 +1,4 @@
+// Abstract class to contain the general behaviour of a car
 
 abstract class Car {
 
@@ -9,10 +10,10 @@ abstract class Car {
   // change in velocity
   PVector acceleration= new PVector(0, 0);
 
-  // Radius of the Car
+  // Size of the Car
   float carRadius = 6;
 
-  // car safe zone
+  // zone to check for other cars
   float safeZone;
 
   // variable for speed limit
@@ -30,37 +31,43 @@ abstract class Car {
   // car Angle
   float carAngle = velocity.heading2D() + PI/2;
   float targetCarAngle = 0;
+  // easing for car rotation
   float easing = 0.2;
 
-  //car path
+  //a path for the car to follow
   CarPath carPath;
   int pathIndex = 1;
-
+  // boolean to know if the car is parked
   boolean parked = false;
+  // boolean to know if the car should be trashed
   boolean trashIt = false;
 
-
+  // ID of the car
   int carID;
 
 
-
-  // constructor
+  //---------------------------------------------------------------
+  // car constructo
+  //---------------------------------------------------------------
   Car(int id) {
     // give starting position for the car
     position = getDestination(new PVector(0, 0));
     // get a first destination for the car
     carDestination = getDestination(position);
-
+    // set the safezone
     safeZone = 100;
-
+    // set the car ID
     carID = id;
   }
 
+  // a methode to get the parking id for the car, overiden in the parking car subclass
   int getParkingId() {
     return 0 ;
   }
 
+  //---------------------------------------------------------------
   // update methode
+  //---------------------------------------------------------------
   void update() {
     velocity.add(acceleration);
     // limit the velocity to the maximum speed alowd
@@ -71,30 +78,42 @@ abstract class Car {
     acceleration.mult(0);
   }
 
-
+  //---------------------------------------------------------------
+  // apply behaviors to the car
+  //---------------------------------------------------------------
   void applyBehaviors(ArrayList<Car> Cars) {
+    // calculate and apply the seperate force
     PVector separateForce = separate(Cars);
-
-    followPath();
     applyForce(separateForce);
-  }
 
+    // follow the path
+    followPath();
+  }
+  //---------------------------------------------------------------
+  // apply behaviors to the car alternative signatur for the city scenario
+  //---------------------------------------------------------------
   void applyBehaviors(ArrayList<Car> Cars, ArrayList<Car> Amb) {
   }
 
-
+  //---------------------------------------------------------------
+  // apply behaviors to the car, pedestrian interaction
+  //---------------------------------------------------------------
   void applyPedestrianBehaviors(Pedestrian pedestrian) {
     PVector separateForce = separateFromPedestrian(pedestrian);   
     followPath();
     applyForce(separateForce);
   }
 
-  // apply Force methode
+  //---------------------------------------------------------------
+  // apply force methode
+  //---------------------------------------------------------------
   void applyForce(PVector force) {
     acceleration.add(force);
   }
 
-  // a methode to remove unwatned cars
+  //---------------------------------------------------------------
+  // a methode to know if a car should get trashed
+  //---------------------------------------------------------------
   boolean trash() {
     if (trashIt) {
       return true;
@@ -111,66 +130,64 @@ abstract class Car {
     // draw debuging info
     if (debug) {
       stroke(255, 60, 0, 80);
-
       strokeWeight(1);
       for (int v = 0; v < carPath.getSize()-1; v++ ) {
         line(carPath.points.get(v).x, carPath.points.get(v).y, carPath.points.get(v+1).x, carPath.points.get(v+1).y);
       }
     }
     // draw car
-
     fill(carColor);
     noStroke();
-
+    // if the car is not moving, set a default angle,( for the parking)
     if (velocity.mag()<=0) {
       carAngle = 0;
     }
+    // if the car is movint, set the angle acordint to it's velocity
     else {
       carAngle = velocity.heading() + PI/2;
     }
 
+    // ease the rotation
     float dir = (carAngle - targetCarAngle) / TWO_PI;
     dir -= round( dir );
     dir *= TWO_PI;
-
     targetCarAngle += dir * easing;
 
-
+    // draw the car
     pushMatrix();
     translate(position.x, position.y);
     rotate(targetCarAngle);
     beginShape();
     rectMode(CENTER);
-    //rect(0, carRadius/2, carRadius, carRadius*2);
-    //fill(200);
-    
+    // check if the car is slow
     if (velocity.mag() < speedLimit/2) {
       fill(200);
     }
     else {      
+      // make a blinking fill for the wheels
       fill(200);
-    if (frameCount % 2== 0) {
-      fill(150);
+      if (frameCount % 2== 0) {
+        fill(150);
+      }
     }
-    }
+    // draw the wheels
     ellipse(carRadius/2.5, carRadius, carRadius/2, carRadius/2 );
     ellipse(-carRadius/2.5, carRadius, carRadius/2, carRadius/2 );
     ellipse(-carRadius/3, -carRadius/3, carRadius/2, carRadius/2 );
     ellipse(carRadius/3, -carRadius/3, carRadius/2, carRadius/2 );
+    // draw the main body
     fill(carColor);
     ellipse(0, carRadius/2, carRadius*1.2, carRadius*2.5 );
-    //fill(60, 200, 255);
-    //ellipse(0, -carRadius/10, carRadius*1, carRadius*0.8 );
+    // set the tail ligth color
     if (velocity.mag() < speedLimit/2) {
       fill(255, 50, 0);
     }
     else {      
       fill(255, 150, 150);
     }
+    // draw the tail light
     ellipse(-carRadius/4, carRadius*1.5, carRadius/2.5, carRadius/2.5);
     ellipse(carRadius/4, carRadius*1.5, carRadius/2.5, carRadius/2.5);
-    fill(255);
-    //ellipse(0, 0-carRadius/2, carRadius/1.2, carRadius/2);
     endShape(CLOSE);
     popMatrix();
   }
@@ -201,7 +218,7 @@ abstract class Car {
       pathIndex = 1;
     }
 
-    // Predict location 20 (arbitrary choice) frames ahead
+    // Predict location 20  frames ahead
     PVector predict = velocity.get();
     predict.normalize();
     predict.mult(20);
@@ -223,6 +240,7 @@ abstract class Car {
     // How far away are we from the path?
     float distance = PVector.dist(predictLoc, normalPoint);
 
+    // seek that target
     seek(target);
   }
 
@@ -264,22 +282,21 @@ abstract class Car {
   // Separation
   // Method checks for nearby vehicles and steers away
   PVector separate (ArrayList<Car> cars) {
-
+    // angle to check for other cars
     float safeAngle = PI/6;
     PVector sForce = new PVector(0, 0);
 
 
-    // For every boid in the system, check if it's too close
+    // For every car in the system, check if it's too close
     for (Car other : cars) {
       // get the distance between the two cars
       float distance = PVector.dist(position, other.position);
-      // If the distance is greater than 0 and less than an arbitrary amount (0 when you are yourself)
-
+      // If the distance is greater than the safe zone
       if (carID != other.carID && (distance < safeZone)) {
         // Calculate vector pointing away from neighbor
         PVector diff = PVector.sub(position, other.position);
 
-
+        // get the main angle
         float mainCarAngle = velocity.heading()+PI;
         float otherCarAngle = diff.heading();
         float multiplier;
@@ -304,19 +321,24 @@ abstract class Car {
           }
         }
         sForce = diff.get();
+        // if the seperate force is bigger than the velocity, meaning the car will u-turn
         if (sForce.mag() > velocity.mag()) {
           sForce = velocity.get();
+          // set the seperate force to - velocity
           sForce.mult(-1);
         }
       }
     }
-
-
+    // return  the seperate force
     return sForce;
   }
 
 
-
+  // ----------------------------------------------------------------------
+  //  Interaction with Pedestrian
+  // ----------------------------------------------------------------------
+  // Separation
+  // Method checks for nearby vehicles and steers away
   boolean findTargetCarfromPedestrian(Pedestrian p) {
     safeZone = 10;
     float safeAngle = PI/6;
@@ -332,11 +354,7 @@ abstract class Car {
     return false;
   }
 
-  // ----------------------------------------------------------------------
-  //  Interaction with Pedestrian
-  // ----------------------------------------------------------------------
-  // Separation
-  // Method checks for nearby vehicles and steers away
+  // seperate from pedestrian methode
   PVector separateFromPedestrian (Pedestrian pedestrian) {
     PVector sForce = new PVector(0, 0);
     PVector diff = PVector.sub(position, pedestrian.location);
@@ -351,7 +369,7 @@ abstract class Car {
 
 
   //---------------------------------------------------------------
-  // method to create random origine and destinations for the accident
+  // method to create random origine and destinations for the accident, will be overiden
   //---------------------------------------------------------------
 
   void applyAccidentBehaviors(PVector Accident) {
@@ -359,7 +377,7 @@ abstract class Car {
 
 
   //---------------------------------------------------------------
-  // method to create random origine and destinations for the cars
+  // method to create random origine and destinations for the cars, will be overiden
   //---------------------------------------------------------------
 
   abstract PVector getDestination( PVector lastDestination); 

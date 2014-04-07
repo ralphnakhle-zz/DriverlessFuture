@@ -265,29 +265,27 @@ class CarSystem
         counter ++;
         // check if the car is parked
         if (Cars.get(randomCar).parked == true) {
-          // give that car a new destination 
+          // give that car a new destination to exit the parking
           Cars.get(randomCar).getDestination(Cars.get(randomCar).position);
-
+          // get its parking id
           parkingId = Cars.get(randomCar).getParkingId();
           // make the parking spot not busy
           parkingSystem.get(parkingId).useParking(false);
           // exit the while loop
           carLeft = true;
-          println("found a car");
         }
         // if no cars match after 300 times, exit the while loop
         if (counter>300) {          
           carLeft = true;
-          println("no cars");
         }
       }
     }
 
-
+    // for the Highway scenario
     if (carScenario == 'H') {
-      println("Accident!");
-
+      // select a random lane
       int Yoffset = int(random(0, 4));
+      // select a random direction
       int northSouth = (int)random(-2, 3);
       if (northSouth == 0 ) {
         northSouth=-1;
@@ -296,16 +294,17 @@ class CarSystem
         northSouth = 1;
       }
 
-
+      // set random position for the accident
       randomX = int(random(0, width));
-
       randomY = height/2 + northSouth*(60+40*Yoffset);
       Accident = new PVector(randomX, randomY);
     }
 
+    // for the shared comodity scenario
     if (carScenario == 'S') {
       toggle = true;
       if (toggle = true) {
+        // offset for the pedestrian position
         int offset = 15;
         int randomize = (int)random(0, 2);
         int mult = 0;
@@ -315,34 +314,39 @@ class CarSystem
         if (randomize == 1 ) {
           mult = 1;
         }
+        // find random position for the pedestrian on the city grid
         randomX = cityGridSize* round(random(-1, width/cityGridSize)+1)+mult*offset;
         randomY = cityGridSize* round(random(-1, height/cityGridSize)+1)+mult*offset;
+        // create a new pedestrian on that position
         pedestrian = new Pedestrian (new PVector(randomX, randomY));
       }
     }
   }
 
 
-
-
   //---------------------------------------------------------------
-  // select the car depending on the scenario
+  // methode to select the car depending on the scenario
   //---------------------------------------------------------------
   void getCar() {
     switch(scenario) {
+      // for the city scenario
     case 'C':  
+      // add a new city car to the Cars arrayList
       Cars.add(new CityCar(carID));
+      // increment the car ID
       carID ++;
       break;
-
+      // for the parking scenario
     case 'P': 
+      // boolean to check if it found an empty parking spot
       boolean foundSpot = false;
       int parkingCounter = 0;
+      // x position of the last car added to the array
       float lastCarX;
 
+      // if there is more than one car in the arraylist
       if (Cars.size()>0) {
-        // last car position
-
+        // get the last car position
         lastCarX = Cars.get(Cars.size()-1).position.x;
         if (lastCarX>0) { 
           lastCarX = 0;
@@ -359,7 +363,7 @@ class CarSystem
         if (parkingSystem.get(parkingCounter).getParkingState() == false) {
           // get the parking spots position
           parkPos = parkingSystem.get(parkingCounter).getParkingPosition();
-          // and a new car and assigne a parking spot to him
+          // add a new car and assigne a parking spot to him and a parking ID
           Cars.add(new ParkingCar(carID, parkStart, parkPos, parkingCounter));
           // make that parking spot busy
           parkingSystem.get(parkingCounter).useParking(true);
@@ -372,7 +376,6 @@ class CarSystem
         // if all the parking spots are full, exit the while loop
         else if (parkingCounter> CarPopulation) {
           foundSpot = true;
-          //println("parking is full!");
         }
         // increment the parking Counter
         parkingCounter ++;
@@ -380,14 +383,19 @@ class CarSystem
 
       break;
 
+      // for the highway scenario
     case 'H': 
+      // add a new highWay car to the Cars arrayList
       Cars.add(new HighwayCar(carID));
+      // increment the car ID
       carID ++;
-
       break;
 
+      // for the shared auto scenario
     case 'S':
+      // add a new city car to the Cars arrayList
       Cars.add(new CityCar(carID));
+      // increment the car ID
       carID ++; 
       break;
 

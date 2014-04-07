@@ -1,4 +1,4 @@
-// a subclass of car for city cars
+// a subclass of car for highway cars
 class HighwayCar extends Car {
   boolean directionRight = false;
   

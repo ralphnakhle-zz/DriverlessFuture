@@ -1,6 +1,3 @@
-//Based on Path Following
-// by Daniel Shiffman <http://www.shiffman.net>
-// The Nature of Code
 
 class HighwayBg {
 

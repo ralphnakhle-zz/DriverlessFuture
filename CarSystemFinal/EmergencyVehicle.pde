@@ -1,19 +1,25 @@
-// a subclass of car for city cars
+// a subclass of car for Ambulances
 class EmergencyVehicle extends Car {
 
   int gridSize;
 
+  // ----------------------------------------------------------------------
+  //  Ambulance constructor
+  // ----------------------------------------------------------------------  
   EmergencyVehicle(int id) {
     super(id);
-
+    // set costum steering and easing
     steerLimit = 0.8;  
     easing = 0.3;
+    // ambulance size
+    carRadius = 10;
   }
 
-  // update methode
+  // ----------------------------------------------------------------------
+  //  Ambulance update
+  // ----------------------------------------------------------------------  
   void update() {
     velocity.add(acceleration);
-
     velocity.mult(1.8);
     // limit the velocity to the maximum speed alowd
     velocity.limit(speedLimit*1.5);
@@ -21,14 +27,12 @@ class EmergencyVehicle extends Car {
     position.add(velocity);
     // reset acceleration
     acceleration.mult(0);
-    
-    carRadius = 10;
   }
 
 
 
   // ----------------------------------------------------------------------
-  //  Car display
+  //  Ambulance display
   // ----------------------------------------------------------------------  
   void display() {
     fill(250, 230, 0);
@@ -42,31 +46,30 @@ class EmergencyVehicle extends Car {
 
     targetCarAngle += dir * easing;
 
-   pushMatrix();
+    pushMatrix();
     translate(position.x, position.y);
     rotate(targetCarAngle);
     beginShape();
     rectMode(CENTER);
-    //rect(0, carRadius/2, carRadius, carRadius*2);
-    //fill(200);
     
+
     if (velocity.mag() < speedLimit/2) {
       fill(200);
     }
     else {      
       fill(200);
-    if (frameCount % 2== 0) {
-      fill(150);
+      if (frameCount % 2== 0) {
+        fill(150);
+      }
     }
-    }
+    // draw wheels
     ellipse(carRadius/2.5, carRadius, carRadius/2, carRadius/2 );
     ellipse(-carRadius/2.5, carRadius, carRadius/2, carRadius/2 );
     ellipse(-carRadius/3, -carRadius/3, carRadius/2, carRadius/2 );
     ellipse(carRadius/3, -carRadius/3, carRadius/2, carRadius/2 );
     fill(250, 230, 0);
     ellipse(0, carRadius/2, carRadius*1.2, carRadius*2.5 );
-    //fill(60, 200, 255);
-    //ellipse(0, -carRadius/10, carRadius*1, carRadius*0.8 );
+   
     if (velocity.mag() < speedLimit/2) {
       fill(255, 50, 0);
     }
@@ -76,7 +79,6 @@ class EmergencyVehicle extends Car {
     ellipse(-carRadius/4, carRadius*1.5, carRadius/2.5, carRadius/2.5);
     ellipse(carRadius/4, carRadius*1.5, carRadius/2.5, carRadius/2.5);
     fill(255);
-    //ellipse(0, 0-carRadius/2, carRadius/1.2, carRadius/2);
     // blinking red cross
     fill(250, 150, 0);
     if (frameCount % 4== 0) {

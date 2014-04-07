@@ -1,11 +1,16 @@
 // a class to generate and display the parking background
 class ParkingBg {
+  // parking size
   int parkingHeight = 520;
   int parkingWidth = 600;
 
+  // empty constructor
   ParkingBg() {
   }
 
+  // ----------------------------------------------------------------------
+  //  a methode to display the parking grid
+  // ----------------------------------------------------------------------
   void display() {
     fill(50, 50);
     rectMode(CENTER);

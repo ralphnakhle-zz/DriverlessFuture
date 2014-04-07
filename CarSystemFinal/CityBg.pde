@@ -1,7 +1,6 @@
+// a class to draw the city background
 class CityBg {
 
-  // A Road is an arraylist of points (PVector objects)
-  ArrayList<PVector> points;
   // A Road has a radius, i.e how far is it ok for the boid to wander off
   float roadWidth;
   int grid;
@@ -9,7 +8,6 @@ class CityBg {
   CityBg() {
     //  radius of 20
     roadWidth = 20;
-    points = new ArrayList<PVector>();
     grid = 180;
   }
 
@@ -40,12 +38,9 @@ class CityBg {
         point(roadWidth*h, roadWidth*v);
       }
     }
-
-    // draw buildings
-   // displayBuildings();
   }
 
-
+  // a method to draw buildings with an offset according to the center of the screen
   void displayBuildings() {
     int buildingN = 10;
     float buildingSize = grid*0.5;
@@ -80,7 +75,6 @@ class CityBg {
         vertex(grid*bv+grid/2-buildingSize/2, grid*bh+grid/2+buildingSize/2);
         endShape(CLOSE);
         stroke(60);
-        //strokeWeight(1.5);
         noStroke();
         fill(65, 180);
         rect(grid*bv+grid/2+offsetX, grid*bh+ grid/2+offsetY, buildingSize, buildingSize);

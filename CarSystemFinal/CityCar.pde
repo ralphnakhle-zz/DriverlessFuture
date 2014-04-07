@@ -4,12 +4,17 @@ class CityCar extends Car {
   float gridSize;
   CityBg cityBg ;
 
-
+  // ----------------------------------------------------------------------
+  //  city car constructor
+  // ----------------------------------------------------------------------
   CityCar(int id) {
     super(id);
     cityBg = new CityBg();
   }
 
+  // ----------------------------------------------------------------------
+  // apply behavior to interact with ambulances
+  // ----------------------------------------------------------------------
   void applyBehaviors(ArrayList<Car> Cars, ArrayList<Car> Ambulance) {
     PVector separateForce = separate(Cars);
     PVector separateFromAmbulanceForce = separateFromAmbulance(Ambulance);
@@ -47,7 +52,7 @@ class CityCar extends Car {
         diff.mult(multiplier);
         // if the car is straight in front..
         sForce = diff.get();
-        
+
         if (sForce.mag() > velocity.mag()) {
           sForce = velocity.get();
           sForce.mult(-1);
