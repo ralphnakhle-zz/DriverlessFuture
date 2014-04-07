@@ -9,18 +9,21 @@ class HighwayBg {
   HighwayBg(float r) {
     // Arbitrary radius of 20
     radius = r;
+    // point array to draw path grid
     points = new ArrayList<PVector>();
+    // new grid starting at point 0
     newGrid(0);
   }
 
   // Add a point to the Road
   void addPoint(float x, float y) {
+    // initialize point
     PVector point = new PVector(x, y);
     points.add(point);
   }
   // creates a grid of points for the road
   void newGrid(int spacer) {
-
+ // add ppints
  addPoint(0,height/2);
  addPoint(width,height/2);
    

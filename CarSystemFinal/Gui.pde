@@ -90,7 +90,7 @@ class GUI {
     rect(controlMargin+40, 609, 30, 30, 4);
     textSize(16);
     int offset = 50;
-
+    // displaying text for EACH scenario - and fading it out. 
     if (scenario == 'C') {
       rectMode(CENTER);
       fill(250, 200, 10, alpha);
@@ -263,7 +263,8 @@ class GUI {
       systemOfCars.triggerEvent();
     }
   }
-
+  
+// method for displaying Gui values - 
   void displayNumber() {
     textSize(12);
     fill(255);

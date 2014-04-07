@@ -1,19 +1,23 @@
-
+// a class to manage pedestrian for scenario shared autos
 class Pedestrian {
-
+// pedestrian class vriables
+// initializing location of pedestrian
   PVector location;
+  // boolean for determining whether pedestrian was picked up
   boolean pickedUp = false;
   PVector velocity;
+  // boolean for knowing when pedestrian is released
   boolean canBePickedUp = true;
+  // alpha value for pedestrian display
   float alpha = 255;
 
-
+// constructor
   Pedestrian (PVector location_) { 
 
     location = location_;
     velocity = new PVector (0, 0);
   }
-
+// display function
   void display() {
     int size = 8;
     rectMode(CENTER);
@@ -29,7 +33,7 @@ class Pedestrian {
     }
   }
 
-
+// method for associating pedestrian location parameters and velocity to cars velocity. 
   void setPickedUp (boolean pickedUp_, PVector velFromCar ) {
     pickedUp = pickedUp_;
     velocity = velFromCar.get();
@@ -37,14 +41,14 @@ class Pedestrian {
     velocity.mult(0.01);
   }
 
-
+  // update car location
   void update(Car car) {
 
     location.x = car.position.x;
     location.y = car.position.y;
     //}
   }
-
+// reset booleans to retrigger pedestrian
   void reset () {
     pickedUp =false;
     canBePickedUp = false;

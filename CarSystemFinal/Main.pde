@@ -24,14 +24,19 @@
 // GLOBAL VARIABLES
 // ----------------------------------------------------------------------
 
+// system of cars
 CarSystem systemOfCars;
 
+// city Background
 CityBg cityBg ;
 
+//parking Background
 ParkingBg parkingBg;
 
+//Highway Background
 HighwayBg highwayBg;
 
+// Gui
 GUI gui ;
 
 // Using this variable to toggle between drawing the lines or not
@@ -48,11 +53,10 @@ void setup() {
 //size(displayWidth, 1035);
 size(displayWidth, displayHeight);
 
-//size(900, 700);
   scenario = 'C';
   //initialize Gui 
   gui = new GUI();
-
+  //instantiating city background, highway background, parking background, system of cars
   cityBg = new CityBg();
   highwayBg = new HighwayBg(40);
   parkingBg = new ParkingBg();
@@ -72,7 +76,8 @@ void draw() {
   // draw the background
   background(0, 10, 10);
 
-  // display the right background
+  // display the right background based on Scenario
+  //and calling every scenarios car system and display
   switch(scenario) {
   case 'C': 
     // Display the road
@@ -122,6 +127,7 @@ public void keyPressed() {
   }
 }
 
+// mouse events - based on mouse released (all gui controlled from here)
 void mouseReleased() {  
   gui.mouseEvent();
   gui.activateToggle();
