@@ -25,7 +25,9 @@ int cityGridSize = 180;
 //  FUNCTIONS
 // ----------------------------------------------------------------------
 void setup() {
+//size(displayWidth, 1035);
 size(displayWidth, displayHeight);
+
 //size(900, 700);
   scenario = 'C';
   //initialize Gui 
@@ -60,18 +62,22 @@ void draw() {
     break;
 
   case 'P': 
+    background(10, 20, 20);
+
     parkingBg.display();
     systemOfCars.run();
     break;
 
   case 'H': 
+      background(10, 10, 20);
+
     // Display the road
     highwayBg.display();
     systemOfCars.run();
     break;
 
   case 'S': 
-  background(25, 10, 10);
+  background(10, 15, 25);
     cityBg.display();
     systemOfCars.run();
     cityBg.displayBuildings();
@@ -99,7 +105,7 @@ public void keyPressed() {
 void mouseReleased() {  
   gui.mouseEvent();
   gui.activateToggle();
-  int controlMargin = width-width/10+10;
+  int controlMargin = width-width/10+60;
 
   if (mouseX >= controlMargin && mouseX <= controlMargin+50 && mouseY >= 50 && mouseY <= 340) {
 

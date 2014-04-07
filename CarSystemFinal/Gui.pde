@@ -4,7 +4,7 @@
 
 class GUI {
 
-  int controlMargin = width-width/10+10;
+  int controlMargin = width-width/10+60;
   int carNumber = 40;
   float speedLimit = 3;
   float steeringLimit = 0.3;
@@ -24,14 +24,14 @@ class GUI {
     //Side bar display 
     noStroke();
     fill(50, 200);
-    rect(width, 0, -width/10, height);
+    rect(width, 0, -width/12, height);
 
     //Header:
     fill(250, 200, 10, 250);
-    rect(width, 0, -width/10, 30);
+    rect(width, 0, -width/12, 30);
     fill(0);
     textSize(10);
-    text("Driverless Future", controlMargin-5, 20);
+    text("Driverless Future", controlMargin, 20);
 
     // City Traffic Tab / Button
     textSize(12);
@@ -88,61 +88,61 @@ class GUI {
     //Plus minus rectangles
     rect(controlMargin, 611, 26, 26, 4);
     rect(controlMargin+40, 609, 30, 30, 4);
-
+    textSize(16);
+    int offset = 50;
 
     if (scenario == 'C') {
       rectMode(CENTER);
       fill(250, 200, 10, alpha);
-      rect(width/2, height/1.32, width/2, height/7, 5);
-      
+      rect(width/2, height/1.32+offset, width/2, height/7, 5);
+
       fill(0, alpha);
-      text("City Traffic", width/2.1, height/1.4);
-      text("The City traffic scenario illustrates the efficiency and security that a city with Driverless Cars ", width/3.2, height/ 1.35);
-      text("and no traffic lights would benefit from. You can trigger the event to launch an Ambulance,", width/3.2, height/1.30);
-      text("and see how cars react to it.", width/3.2, height/1.25);
-      alpha -= 0.6;
+      text("City Traffic", width/2.1, height/1.4+offset);
+      text("The City traffic scenario illustrates the efficiency and security that a city with Driverless Cars ", width/3.2, height/ 1.35+offset);
+      text("and no traffic lights would benefit from. You can trigger the event to launch an Ambulance,", width/3.2, height/1.30+offset);
+      text("and see how cars react to it.", width/3.2, height/1.25+offset);
+      alpha -= 0.4;
     }  
 
     if (scenario == 'P') {
       //text = "Parking"
       rectMode(CENTER);
       fill(250, 200, 10, alpha);
-      rect(width/2, height/1.32, width/2, height/7, 5);
-      
+      rect(width/2, height/1.32+offset, width/2, height/7, 5);
+
       fill(0, alpha);
-      text("Parking", width/2.1, height/1.4);
-      text("In the Parking scenario, proximity of cars and automatic access and exit in parking lots can save us", width/3.2, height/ 1.35);
-      text("a lot of space. By triggering the event button, the user can call his car from outside the parking.", width/3.2, height/1.30);
-      text("Increasing the car population allows you to add more cars and see how they react. ", width/3.2, height/1.25);
-      alpha -= 0.6;
+      text("Parking", width/2.1, height/1.4+offset);
+      text("In the Parking scenario, proximity of cars and automatic access and exit in parking lots can save us", width/3.2, height/ 1.35+offset);
+      text("a lot of space. By triggering the event button, the user can call his car from outside the parking.", width/3.2, height/1.30+offset);
+      text("Increasing the car population allows you to add more cars and see how they react. ", width/3.2, height/1.25+offset);
+      alpha -= 0.4;
     }  
 
     if (scenario == 'H') {
       //text = "Highway";
       rectMode(CENTER);
       fill(250, 200, 10, alpha);
-      rect(width/2, height/1.32, width/2, height/7, 5);
-      
+      rect(width/2, height/1.32+offset, width/2, height/7, 5);
+
       fill(0, alpha);
-      text("Highway", width/2.1, height/1.4);
-      text("The Highway scenario showcases the uniformity and time saving features that come with Driverless Cars.", width/3.2, height/ 1.35);
-      text("Once the event trigger is activated, an accident will be simulated on the Highway, where ", width/3.2, height/1.30);
-      text("you can see how cars react to it.", width/3.2, height/1.25);
-      alpha -= 0.6;
+      text("Highway", width/2.1, height/1.4+offset);
+      text("The Highway scenario showcases the uniformity and time saving features that come with Driverless Cars.", width/3.2, height/ 1.35+offset);
+      text("Once the event trigger is activated, a hazard will be simulated on the Highway, where ", width/3.2, height/1.30+offset);
+      text("you can see how cars react to it.", width/3.2, height/1.25+offset);
+      alpha -= 0.4;
     }  
 
     if (scenario == 'S') {      
       rectMode(CENTER);
       fill(250, 200, 10, alpha);
-      rect(width/2, height/1.32, width/2, height/7, 5);
-      
-      fill(0, alpha);
-      text("Shared Autos", width/2.1, height/1.4);
-      text("The Shared Autos scenario illustrates a car system where Driverless Cars are not as much of a property,", width/3.5, height/ 1.35);
-      text("but more of a shared commodity. By triggering the event, you simulate a car user that gets picked up by any", width/3.5, height/1.30);
-      text("car and dropped off wherever he’s going. The car is then available to pick up any other passengers calling it.", width/3.5, height/1.25);
-      alpha -= 0.6;
+      rect(width/2, height/1.32+offset, width/2, height/7, 5);
 
+      fill(0, alpha);
+      text("Shared Autos", width/2.1, height/1.4+offset);
+      text("The Shared Autos scenario illustrates a car system where Driverless Cars are not as much of a property,", width/3.5, height/ 1.35+offset);
+      text("but more of a shared commodity. By triggering the event, you simulate a car user that gets picked up by any", width/3.5, height/1.30+offset);
+      text("car and dropped off wherever he’s going. The car is then available to pick up any other passengers calling it.", width/3.5, height/1.25+offset);
+      alpha -= 0.4;
     }  
 
     fill(0, alpha);
@@ -156,7 +156,7 @@ class GUI {
 
     if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 491 && mouseY <= 517 ) {
       if (systemOfCars.getCarPopulation()>=4) {
-       // carNumber --;
+        // carNumber --;
         systemOfCars.setCarPopulation(0);
       }
     }
@@ -172,12 +172,15 @@ class GUI {
     // Car Speed Toggle Setup
     //--------------------------------------------------
 
-    if (speedLimit >= 10) {
-      speedLimit = 10;
+    if (speedLimit >= 4.5) {
+      speedLimit = 4.5;
+    }
+    if (scenario == 'P' && speedLimit >= 2.5) {
+      speedLimit = 2.5;
     }
 
-    if (speedLimit < 2) {
-      speedLimit = 2;
+    if (speedLimit < 1) {
+      speedLimit = 1;
     }
 
     if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 551 && mouseY <= 577) {
@@ -195,19 +198,18 @@ class GUI {
       systemOfCars.setCarSpeedLimit(speedLimit);
       println(speedLimit);
     }
-    //text(int(speedLimit)*9 + "/mph", controlMargin+40, 540);
 
 
     //--------------------------------------------------
-    // Car Speed Toggle Setup
+    // Car Steer Toggle Setup
     //--------------------------------------------------
 
-    if (steeringLimit >= 2) {
-      steeringLimit = 2;
+    if (steeringLimit >= 1.5) {
+      steeringLimit = 1.5;
     }
 
-    if (steeringLimit < 0.1) {
-      steeringLimit = 0.1;
+    if (steeringLimit < 0.5) {
+      steeringLimit = 0.5;
     }
 
     if (mouseX >= controlMargin && mouseX <= controlMargin+26 && mouseY >= 611 && mouseY <= 637) {
@@ -263,10 +265,11 @@ class GUI {
   }
 
   void displayNumber() {
+    textSize(12);
     fill(255);
     carNumber = systemOfCars.getCarPopulation();
     text(carNumber, controlMargin+65, 480);
-    text(int(speedLimit)*9 + "/mph", controlMargin+40, 540);
+    text(int(speedLimit*9) + "/mph", controlMargin+40, 540);
     text(int(steeringLimit*10), controlMargin+50, 600);
   }
 }

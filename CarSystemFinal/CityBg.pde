@@ -47,7 +47,7 @@ class CityBg {
 
 
   void displayBuildings() {
-    int buildingN = 7;
+    int buildingN = 10;
     float buildingSize = grid*0.5;
     float offsetX=0;
     float offsetY=0;
@@ -59,7 +59,7 @@ class CityBg {
         buildingHeight = 0.15;
         rectMode(CENTER);
         noStroke();
-        fill(25);
+        fill(50, 180);
         offsetX = (grid*bv-width/2)*buildingHeight;
         offsetY = (grid*bh-height/2)*buildingHeight;
 
@@ -80,8 +80,9 @@ class CityBg {
         vertex(grid*bv+grid/2-buildingSize/2, grid*bh+grid/2+buildingSize/2);
         endShape(CLOSE);
         stroke(60);
-        strokeWeight(1.5);
-        fill(50);
+        //strokeWeight(1.5);
+        noStroke();
+        fill(65, 180);
         rect(grid*bv+grid/2+offsetX, grid*bh+ grid/2+offsetY, buildingSize, buildingSize);
       }
     }

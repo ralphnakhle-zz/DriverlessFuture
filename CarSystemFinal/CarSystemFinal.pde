@@ -54,7 +54,7 @@ class CarSystem
     PVector parkingPosition;
     for (int p = 0; p < 10; p ++) {
       for (int pR = 0; pR < 10; pR ++) {
-        parkingPosition = new PVector(width /2+300 - 60*p, 120+ pR*50);
+        parkingPosition = new PVector(width /2+300 - 60*p, height/2-300+ pR*52);
         parkingSystem.add(new ParkingSpot(parkingPosition, false));
       }
     }
@@ -304,10 +304,10 @@ class CarSystem
           lastCarX = 0;
         }
         // define where the cars come in 
-        parkStart = new PVector(lastCarX-100, height-50);
+        parkStart = new PVector(lastCarX-100, height-100);
       }
       else {
-        parkStart = new PVector(0, height-50);
+        parkStart = new PVector(0, height-100);
       }
       // while loop to find an empty parking spot
       while (foundSpot == false) {
