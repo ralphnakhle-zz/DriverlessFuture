@@ -91,27 +91,62 @@ class GUI {
 
 
     if (scenario == 'C') {
-      text = "City";
-      alpha -= 1;
+      rectMode(CENTER);
+      fill(250, 200, 10, alpha);
+      rect(width/2, height/1.32, width/2, height/7, 5);
+      
+      fill(0, alpha);
+      text("City Traffic", width/2.1, height/1.4);
+      text("The City traffic scenario illustrates the efficiency and security that a city with Driverless Cars ", width/3.2, height/ 1.35);
+      text("and no traffic lights would benefit from. You can trigger the event to launch an Ambulance,", width/3.2, height/1.30);
+      text("and see how cars react to it.", width/3.2, height/1.25);
+      alpha -= 0.6;
     }  
 
     if (scenario == 'P') {
-      text = "Parking";
-      alpha -= 1;
+      //text = "Parking"
+      rectMode(CENTER);
+      fill(250, 200, 10, alpha);
+      rect(width/2, height/1.32, width/2, height/7, 5);
+      
+      fill(0, alpha);
+      text("Parking", width/2.1, height/1.4);
+      text("In the Parking scenario, proximity of cars and automatic access and exit in parking lots can save us", width/3.2, height/ 1.35);
+      text("a lot of space. By triggering the event button, the user can call his car from outside the parking.", width/3.2, height/1.30);
+      text("Increasing the car population allows you to add more cars and see how they react. ", width/3.2, height/1.25);
+      alpha -= 0.6;
     }  
 
     if (scenario == 'H') {
-      text = "Highway";
-      alpha -= 1;
+      //text = "Highway";
+      rectMode(CENTER);
+      fill(250, 200, 10, alpha);
+      rect(width/2, height/1.32, width/2, height/7, 5);
+      
+      fill(0, alpha);
+      text("Highway", width/2.1, height/1.4);
+      text("The Highway scenario showcases the uniformity and time saving features that come with Driverless Cars.", width/3.2, height/ 1.35);
+      text("Once the event trigger is activated, an accident will be simulated on the Highway, where ", width/3.2, height/1.30);
+      text("you can see how cars react to it.", width/3.2, height/1.25);
+      alpha -= 0.6;
     }  
 
-    if (scenario == 'S') {
-      text = "Shared Auto";
-      alpha -= 1;
+    if (scenario == 'S') {      
+      rectMode(CENTER);
+      fill(250, 200, 10, alpha);
+      rect(width/2, height/1.32, width/2, height/7, 5);
+      
+      fill(0, alpha);
+      text("Shared Autos", width/2.1, height/1.4);
+      text("The Shared Autos scenario illustrates a car system where Driverless Cars are not as much of a property,", width/3.5, height/ 1.35);
+      text("but more of a shared commodity. By triggering the event, you simulate a car user that gets picked up by any", width/3.5, height/1.30);
+      text("car and dropped off wherever he’s going. The car is then available to pick up any other passengers calling it.", width/3.5, height/1.25);
+      alpha -= 0.6;
+
     }  
 
-    fill(255, alpha);
-    text(text, width/2, height/2);
+    fill(0, alpha);
+    //text(text, width/2, height/2.7);
   }
 
   void activateToggle() {

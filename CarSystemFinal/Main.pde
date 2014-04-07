@@ -25,8 +25,8 @@ int cityGridSize = 180;
 //  FUNCTIONS
 // ----------------------------------------------------------------------
 void setup() {
-//size(displayWidth, displayHeight);
-size(900, 700);
+size(displayWidth, displayHeight);
+//size(900, 700);
   scenario = 'C';
   //initialize Gui 
   gui = new GUI();
